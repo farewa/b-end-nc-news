@@ -87,6 +87,42 @@ describe("formatDates", () => {
   });
 });
 
-describe("makeRefObj", () => {});
+describe("makeRefObj", () => {
+  it("returns an empty object when passed an empty array", () => {
+    expect(makeRefObj([])).to.eql({});
+  });
+  it("returns a reference object made up of data from the array that is passed into the function ", () => {
+    const list = [{ article_id: 1, title: "A" }];
+    const refObj = { A: 1 };
+    expect(makeRefObj(list)).to.eql(refObj);
+  });
+});
 
-describe("formatComments", () => {});
+describe.only("formatComments", () => {
+  it("returns an empty array when passed an empty array and an empty reference object ", () => {
+    expect(formatComments([], {})).to.eql([]);
+  });
+  it("returns a formatted comment array when passed an array with one comment object and a reference object", () => {
+    const comment = [{
+      body:
+        "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      belongs_to: "They're not exactly dogs, are they?",
+      created_by: "butter_bridge",
+      votes: 16,
+      created_at: 1511354163389,
+    }];
+    const articleRef = { "They're not exactly dogs, are they?": 1 };
+    const formattedComment = [{
+      body:
+        "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      article_id: 1,
+      author: "butter_bridge",
+      votes: 16,
+      created_at: new Date(1511354163389),
+    }];
+    expect(formatComments(comment, articleRef)).to.eql(formattedComment)
+  });
+  
+  // do I need one more test?
+});
+
