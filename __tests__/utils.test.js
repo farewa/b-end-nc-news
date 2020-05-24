@@ -98,7 +98,7 @@ describe("makeRefObj", () => {
   });
 });
 
-describe.only("formatComments", () => {
+describe("formatComments", () => {
   it("returns an empty array when passed an empty array and an empty reference object ", () => {
     expect(formatComments([], {})).to.eql([]);
   });
