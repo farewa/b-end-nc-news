@@ -6,6 +6,23 @@ exports.formatDates = (list) => {
   });
 };
 
-exports.makeRefObj = (list) => {};
+exports.makeRefObj = (list) => {
+  return list.reduce((refObj, listItem) => {
+   refObj[listItem.title] = listItem.article_id
+   return refObj
+  }, {})
+};
 
-exports.formatComments = (comments, articleRef) => {};
+exports.formatComments = (comments, articleRef) => {
+  const formattedComment =  comments.map((comment) => {
+    const belongsToValue = comment.belongs_to
+
+    const {created_by: author, belongs_to: article_id, ...restOfComment} = comment
+  
+    const newObj = {author, article_id: articleRef[belongsToValue], ...restOfComment}
+
+    return newObj
+ 
+  })
+  return this.formatDates(formattedComment)
+};
