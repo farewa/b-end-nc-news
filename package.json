@@ -9,7 +9,8 @@
     "migrate-latest": "knex migrate:latest",
     "migrate-rollback": "knex migrate:rollback",
     "seed": "knex seed:run",
-    "test": "mocha __tests__"
+    "test-util": "mocha __tests__/utils.test.js",
+    "test": "mocha __tests__/app.test.js"
   },
   "repository": {
     "type": "git",
