@@ -27,8 +27,8 @@ describe("/api", () => {
       return request(app)
         .get("/api/users/icellusedkars")
         .expect(200)
-        .then(({ body }) => {
-          console.log(body);
+        .then(({ body: {user} }) => {
+         expect(user).to.have.all.keys('username', 'avatar_url', 'name')
         });
     });
   });
