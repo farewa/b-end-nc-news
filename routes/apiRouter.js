@@ -1,5 +1,8 @@
 const apiRouter = require('express').Router()
-const topicRouter = release
+const topicRouter = require('./topicRouter')
+
+apiRouter.use('/topics', topicRouter)
+
 
 
 
