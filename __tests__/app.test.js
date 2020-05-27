@@ -22,4 +22,14 @@ describe("/api", () => {
         });
     });
   });
+  describe("/users/:username", () => {
+    it("tests that GET returns a status of 200 and the username object", () => {
+      return request(app)
+        .get("/api/users/icellusedkars")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body);
+        });
+    });
+  });
 });
