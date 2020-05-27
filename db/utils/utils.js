@@ -1,9 +1,9 @@
 exports.formatDates = (list) => {
-  if (list.length === 0) return [];
+  if (!list) return [];
   else {
     return list.map((obj) => {
-      const unformattedTimestamp = obj.created_at;
-      obj.created_at = new Date(unformattedTimestamp);
+      const timeStamp = obj.created_at;
+      obj.created_at = new Date(timeStamp);
       return obj;
     });
   }
@@ -36,5 +36,6 @@ exports.formatComments = (comments, articleRef) => {
 
       return newObj;
     });
+   
   }
 };
