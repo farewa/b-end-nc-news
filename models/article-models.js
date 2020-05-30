@@ -17,15 +17,26 @@ exports.fetchArticleById = (article_id) => {
     .leftJoin("comments", "comments.article_id", "articles.article_id")
     .groupBy("articles.article_id")
     .then(([article]) => {
-      if (!article) return Promise.reject({status: 404, message: 'article_id does not exist'})
-      else return article
-    })
+      if (!article)
+        return Promise.reject({
+          status: 404,
+          message: "article_id does not exist",
+        });
+      else return article;
+    });
 };
 
 exports.updateArticleById = (article_id, inc_votes = 0) => {
-  return connection('articles')
-  .where('article_id', article_id)
-  .increment({votes: inc_votes})
-  .returning('*')
-  .then(([article])=> article)
-}
+  return connection("articles")
+    .where("article_id", article_id)
+    .increment({ votes: inc_votes })
+    .returning("*")
+    .then(([article]) => article);
+};
+
+exports.insertCommentByArticleId = (newComment) => {
+  return connection("comments")
+  .insert(newComment)
+  .returning("*")
+  .then(([comment]) => comment)
+};
