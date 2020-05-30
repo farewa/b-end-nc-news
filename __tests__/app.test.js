@@ -1,5 +1,7 @@
 process.env.NODE_ENV = "test"; // setting environment to test
-const { expect } = require("chai");
+const chai = require('chai')
+const expect = chai.expect
+chai.use(require("sams-chai-sorted"));
 const app = require("../app"); // the app that we want to test
 const request = require("supertest"); // allows us to mimic url request
 const connection = require("../db/connection"); //
@@ -145,5 +147,15 @@ describe("/api", () => {
           );
         });
     });
+    it("tests status 200: GET request returns a sorted array of comments when passed a sort_by query", () => {
+      return request(app)
+      .get('/api/articles/1/comments?sort_by=votes')
+      .expect(200)
+      .then(({body: {comments}}) => {
+        expect(comments).to.be.sortedBy('votes')
+      })
+    })
+
+    
   });
 });
