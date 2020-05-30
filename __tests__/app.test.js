@@ -67,24 +67,33 @@ describe("/api", () => {
         .patch("/api/articles/3")
         .send({ inc_votes: 1 })
         .expect(200)
-        .then(({ body }) => {
-          expect(body.article.votes).to.eql(1);
+        .then(({ body: {article} }) => {
+          expect(article.votes).to.eql(1);
+        });
+    });
+    it("tests status 200: PATCH request with an empty body responds with the article unchanged", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send()
+        .expect(200)
+        .then(({ body: {article} }) => {
+          expect(article).to.not.change
         });
     });
     it("tests status 400: GET request for an article_id that is in the wrong format errors with correct status code", () => {
       return request(app)
         .get("/api/articles/dog")
         .expect(400)
-        .then(({ body }) => {
-          expect(body.message).to.eql("Bad Request");
+        .then(({ body: {message} }) => {
+          expect(message).to.eql("Bad Request");
         });
     });
     it("tests status 404: GET request for an article_id that does not exist errors with correct status code ", () => {
       return request(app)
         .get("/api/articles/9999")
         .expect(404)
-        .then(({ body }) => {
-          expect(body.message).to.eql("article_id does not exist");
+        .then(({ body: {message} }) => {
+          expect(message).to.eql("article_id does not exist");
         });
     });
   });
