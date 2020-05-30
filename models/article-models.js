@@ -21,7 +21,7 @@ exports.fetchArticleById = (article_id) => {
     })
 };
 
-exports.updateArticleById = (article_id, inc_votes) => {
+exports.updateArticleById = (article_id, inc_votes = 0) => {
   return connection('articles')
   .where('article_id', article_id)
   .increment({votes: inc_votes})
