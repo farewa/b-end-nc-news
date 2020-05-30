@@ -1,7 +1,8 @@
 process.env.NODE_ENV = "test"; // setting environment to test
 const chai = require('chai')
-const expect = chai.expect
+const {expect} = chai
 chai.use(require("sams-chai-sorted"));
+
 const app = require("../app"); // the app that we want to test
 const request = require("supertest"); // allows us to mimic url request
 const connection = require("../db/connection"); //
@@ -152,10 +153,17 @@ describe("/api", () => {
       .get('/api/articles/1/comments?sort_by=votes')
       .expect(200)
       .then(({body: {comments}}) => {
-        expect(comments).to.be.sortedBy('votes')
+        expect(comments).to.be.sortedBy('votes', {descending: true})
+      })
+    })
+    it('tests status 200: GET request returns a sorted array sorted by order but defaults to descending when a specifier is not passed', () => {
+      return request(app)
+      .get("/api/articles/1/comments?order=asc")
+      .expect(200)
+      .then(({body: {comments}}) => {
+        expect(comments).to.be.sorted({descending: false})
       })
     })
 
-    
   });
 });
