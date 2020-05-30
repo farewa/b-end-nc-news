@@ -29,7 +29,7 @@ exports.postCommentByArticleId = (req, res, next) => {
 
 exports.getCommentByArticleId = (req, res, next) => {
   const {article_id} = req.params
-  const {sort_by} = req.query
-  fetchCommentByArticleId(article_id, sort_by)
+  const {sort_by, order} = req.query
+  fetchCommentByArticleId(article_id, sort_by, order)
   .then((comments) => res.status(200).send({comments}))
 }
