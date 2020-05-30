@@ -41,7 +41,7 @@ exports.insertCommentByArticleId = (newComment) => {
     .then(([comment]) => comment);
 };
 
-exports.fetchCommentByArticleId = (article_id, sort_by) => {
+exports.fetchCommentByArticleId = (article_id, sort_by, order) => {
   return connection("comments")
     .select(
       "comments.comment_id",
@@ -52,6 +52,6 @@ exports.fetchCommentByArticleId = (article_id, sort_by) => {
     )
     .from('comments')
     .where("comments.article_id", article_id)
-    .orderBy(sort_by || "created_at")
+    .orderBy(sort_by || "created_at", order || 'desc')
     .returning("*");
 };
