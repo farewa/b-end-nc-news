@@ -9,7 +9,7 @@ describe("/api", () => {
   after(() => connection.destroy()); // stops tests hanging
 
   describe("/topics", () => {
-    it("tests that GET returns a status of 200 and all of the topics", () => {
+    it("tests that GET returns a status of 200 and the topics array", () => {
       return request(app)
         .get("/api/topics")
         .expect(200)
@@ -23,7 +23,7 @@ describe("/api", () => {
     });
   });
   describe("/users/:username", () => {
-    it("tests status 200: GET request returns a username object and the correct status code", () => {
+    it("tests status 200: GET request returns a username object and the correct status code and message", () => {
       return request(app)
         .get("/api/users/icellusedkars")
         .expect(200)
@@ -47,7 +47,7 @@ describe("/api", () => {
     });
   });
   describe("/articles/:article_id", () => {
-    it("tests status 200: GET request returns correct status and the specified article", () => {
+    it("tests status 200: GET request returns correct status and the specified article object", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
@@ -64,7 +64,7 @@ describe("/api", () => {
           );
         });
     });
-    it("tests status 200: PATCH request responds with an article with the updated votes and the correct status code", () => {
+    it("tests status 200: PATCH request responds with an article object with the updated votes and the correct status code", () => {
       return request(app)
         .patch("/api/articles/3")
         .send({ inc_votes: 1 })
@@ -73,7 +73,7 @@ describe("/api", () => {
           expect(article.votes).to.eql(1);
         });
     });
-    it("tests status 200: PATCH request with an empty body responds with the article unchanged", () => {
+    it("tests status 200: PATCH request with an empty body responds with the article object unchanged", () => {
       return request(app)
         .patch("/api/articles/1")
         .send()
@@ -83,7 +83,7 @@ describe("/api", () => {
         });
     });
     describe("ERRORS", () => {
-      it("tests status 400: GET request for an article_id that is in the wrong format errors with correct status code", () => {
+      it("tests status 400: GET request for an article_id that is in the wrong format errors with correct status code and message", () => {
         return request(app)
           .get("/api/articles/dog")
           .expect(400)
@@ -91,7 +91,7 @@ describe("/api", () => {
             expect(message).to.eql("Bad Request");
           });
       });
-      it("tests status 404: GET request for an article_id that does not exist errors with correct status code ", () => {
+      it("tests status 404: GET request for an article_id that does not exist errors with correct status code and message", () => {
         return request(app)
           .get("/api/articles/9999")
           .expect(404)
@@ -99,7 +99,7 @@ describe("/api", () => {
             expect(message).to.eql("article_id does not exist");
           });
       });
-      it("tests status 400: PATCH request responds with correct status code when passed a body with an incorrect format", () => {
+      it("tests status 400: PATCH request responds with correct status code and message when passed a body with an incorrect format", () => {
         return request(app)
           .patch("/api/articles/1")
           .send({ inc_votes: "dog" })
@@ -111,23 +111,39 @@ describe("/api", () => {
     });
   });
   describe("/articles/:article_id/comments", () => {
-    it('tests status 201: POST request returns the newly posted comment', () => {
+    it("tests status 201: POST request returns the newly posted comment object", () => {
       return request(app)
         .post("/api/articles/1/comments")
         .send({
           username: "icellusedkars",
-          body: "the weather outside Northcoders is particularly bright today"})
-        .expect(201)
-        .then(({body:{comment}}) => {
-          expect(comment).to.contain.keys(
-            'comment_id',
-            'author',
-            'article_id',
-            'votes',
-            'created_at',
-            'body'
-          )
+          body: "the weather outside Northcoders is particularly bright today",
         })
-    })
-  })
+        .expect(201)
+        .then(({ body: { comment } }) => {
+          expect(comment).to.contain.keys(
+            "comment_id",
+            "author",
+            "article_id",
+            "votes",
+            "created_at",
+            "body"
+          );
+        });
+    });
+    it("tests status 200: GET request returns an array of comments for the given article_id", () => {
+      return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).to.be.an("array");
+          expect(comments[0]).to.have.all.keys(
+            "comment_id",
+            "votes",
+            "created_at",
+            "author",
+            "body"
+          );
+        });
+    });
+  });
 });
