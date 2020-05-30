@@ -1,6 +1,7 @@
 const {
   fetchArticleById,
   updateArticleById,
+  insertCommentByArticleId
 } = require("../models/article-models");
 
 exports.getArticleById = (req, res, next) => {
@@ -10,9 +11,17 @@ exports.getArticleById = (req, res, next) => {
     .catch(next);
 };
 exports.patchArticleById = (req, res, next) => {
-  const { inc_votes } = req.body;
   const { article_id } = req.params;
+  const { inc_votes } = req.body;
   updateArticleById(article_id, inc_votes)
   .then((article) => res.status(200).send({ article }))
   .catch(next)
 };
+
+exports.postCommentByArticleId = (req, res, next) => {
+  const {article_id} = req.params
+  const {username, body} = req.body
+  const newComment = {article_id, author: username, body} // because that's the format what the table for comment requires
+  insertCommentByArticleId(newComment)
+  .then((comment) => res.status(201).send({comment}))
+}
