@@ -23,7 +23,7 @@ describe("/api", () => {
     });
   });
   describe("/users/:username", () => {
-    it("tests that GET returns a status of 200 and the username object", () => {
+    it("tests status 200: GET request returns a username object and the correct status code", () => {
       return request(app)
         .get("/api/users/icellusedkars")
         .expect(200)
@@ -37,7 +37,7 @@ describe("/api", () => {
         return request(app)
           [method]("api/users/icellusedkars")
           .expect(405)
-          .then(({body: {message}}) => {
+          .then(({ body: { message } }) => {
             expect(message).to.eql(["Method Not Allowed"]);
           });
       });
@@ -45,7 +45,7 @@ describe("/api", () => {
     });
   });
   describe("/articles/:article_id", () => {
-    it("tests that a GET request returns a status of 200 and the specified article ", () => {
+    it("tests status 200:  GET request returns correct status and the specified article ", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
@@ -62,7 +62,16 @@ describe("/api", () => {
           );
         });
     });
-    it("tests that an article_id that is in the wrong format errors with status code 400", () => {
+    it("tests status 200: PATCH request responds with an article with the updated votes and the correct status code", () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article.votes).to.eql(1);
+        });
+    });
+    it("tests status 400: GET request for an article_id that is in the wrong format errors with correct status code", () => {
       return request(app)
         .get("/api/articles/dog")
         .expect(400)
@@ -70,7 +79,7 @@ describe("/api", () => {
           expect(body.message).to.eql("Bad Request");
         });
     });
-    it("tests than an article_id that does not exist errors with status code 404 ", () => {
+    it("tests status 404: GET request for an article_id that does not exist errors with correct status code ", () => {
       return request(app)
         .get("/api/articles/9999")
         .expect(404)
@@ -78,14 +87,5 @@ describe("/api", () => {
           expect(body.message).to.eql("article_id does not exist");
         });
     });
-    it('tests that a PATCH request responds with status code 200 and the article with the updated votes', () => {
-      return request(app)
-        .patch("/api/articles/3")
-        .send({ inc_votes: 1 })
-        .expect(200)
-        .then(({body}) => {
-          expect(body.article.votes).to.eql(1)
-        })
-    })
   });
 });
