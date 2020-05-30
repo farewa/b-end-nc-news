@@ -20,3 +20,11 @@ exports.fetchArticleById = (article_id) => {
       if (!article) return Promise.reject({status: 404, message: 'article_id does not exist'})
     })
 };
+
+exports.updateArticleById = (article_id, inc_votes) => {
+  return connection('articles')
+  .where('article_id', article_id)
+  .increment({votes: inc_votes})
+  .returning('*')
+  .then(([article])=> article)
+}
