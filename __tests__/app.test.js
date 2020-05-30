@@ -37,15 +37,15 @@ describe("/api", () => {
         return request(app)
           [method]("api/users/icellusedkars")
           .expect(405)
-          .then((response) => {
-            expect(response.body.msg).to.eql(["Method Not Allowed"]);
+          .then(({body: {message}}) => {
+            expect(message).to.eql(["Method Not Allowed"]);
           });
       });
       return Promise.all(methodsNotAllowed);
     });
   });
   describe("/articles/:article_id", () => {
-    it("tests that GET returns a status of 200 and the specified article ", () => {
+    it("tests that a GET request returns a status of 200 and the specified article ", () => {
       return request(app)
         .get("/api/articles/1")
         .expect(200)
@@ -70,14 +70,22 @@ describe("/api", () => {
           expect(body.message).to.eql("Bad Request");
         });
     });
-    it('tests than an article_id that does not exist errors with status code 404 ', () => {
+    it("tests than an article_id that does not exist errors with status code 404 ", () => {
       return request(app)
-      .get('/api/articles/9999')
-      .expect(404)
-      .then(({body}) => {
-        expect(body.message).to.eql('article_id does not exist')
-      } )
-
+        .get("/api/articles/9999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.message).to.eql("article_id does not exist");
+        });
     });
+    it('tests that a PATCH request responds with status code 200 and the article with the updated votes', () => {
+      return request(app)
+        .patch("/api/articles/3")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({body}) => {
+          expect(body.article.votes).to.eql(1)
+        })
+    })
   });
 });
