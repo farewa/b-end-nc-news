@@ -18,6 +18,7 @@ exports.fetchArticleById = (article_id) => {
     .groupBy("articles.article_id")
     .then(([article]) => {
       if (!article) return Promise.reject({status: 404, message: 'article_id does not exist'})
+      else return article
     })
 };
 
