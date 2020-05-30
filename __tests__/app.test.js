@@ -31,17 +31,19 @@ describe("/api", () => {
           expect(user).to.have.all.keys("username", "avatar_url", "name");
         });
     });
-    xit("tests that all other methods are not able to used on this endpoint", () => {
-      const methods = ["post", "put", "delete", "patch"];
-      const methodsNotAllowed = methods.map((method) => {
-        return request(app)
-          [method]("api/users/icellusedkars")
-          .expect(405)
-          .then(({ body: { message } }) => {
-            expect(message).to.eql(["Method Not Allowed"]);
-          });
+    describe("ERRORS", () => {
+      xit("tests that all other methods are not able to used on this endpoint", () => {
+        const methods = ["post", "put", "delete", "patch"];
+        const methodsNotAllowed = methods.map((method) => {
+          return request(app)
+            [method]("api/users/icellusedkars")
+            .expect(405)
+            .then(({ body: { message } }) => {
+              expect(message).to.eql(["Method Not Allowed"]);
+            });
+        });
+        return Promise.all(methodsNotAllowed);
       });
-      return Promise.all(methodsNotAllowed);
     });
   });
   describe("/articles/:article_id", () => {
@@ -67,7 +69,7 @@ describe("/api", () => {
         .patch("/api/articles/3")
         .send({ inc_votes: 1 })
         .expect(200)
-        .then(({ body: {article} }) => {
+        .then(({ body: { article } }) => {
           expect(article.votes).to.eql(1);
         });
     });
@@ -77,11 +79,10 @@ describe("/api", () => {
         .send()
         .expect(200)
         .then(({ body: { article } }) => {
-          expect(article).to.not.change
+          expect(article).to.not.change;
         });
     });
-    describe('ERRORS', () => {
-     
+    describe("ERRORS", () => {
       it("tests status 400: GET request for an article_id that is in the wrong format errors with correct status code", () => {
         return request(app)
           .get("/api/articles/dog")
@@ -98,16 +99,35 @@ describe("/api", () => {
             expect(message).to.eql("article_id does not exist");
           });
       });
-      it('tests status 400: PATCH request responds with correct status code when passed a body with an incorrect format', () => {
+      it("tests status 400: PATCH request responds with correct status code when passed a body with an incorrect format", () => {
         return request(app)
-        .patch('/api/articles/1')
-        .send({inc_votes: 'dog'})
-        .expect(400)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Bad Request')
-        })
+          .patch("/api/articles/1")
+          .send({ inc_votes: "dog" })
+          .expect(400)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Bad Request");
+          });
       });
     });
-    
   });
+  describe("/articles/:article_id/comments", () => {
+    it('tests status 201: POST request returns the newly posted comment', () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({
+          username: "icellusedkars",
+          body: "the weather outside Northcoders is particularly bright today"})
+        .expect(201)
+        .then(({body:{comment}}) => {
+          expect(comment).to.contain.keys(
+            'comment_id',
+            'author',
+            'article_id',
+            'votes',
+            'created_at',
+            'body'
+          )
+        })
+    })
+  })
 });
