@@ -16,5 +16,7 @@ exports.fetchArticleById = (article_id) => {
     .count("comments.article_id as comment_count")
     .leftJoin("comments", "comments.article_id", "articles.article_id")
     .groupBy("articles.article_id")
-    .then(([article]) => article)
+    .then(([article]) => {
+      if (!article) return Promise.reject({status: 404, message: 'article_id does not exist'})
+    })
 };
