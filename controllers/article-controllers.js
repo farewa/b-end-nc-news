@@ -1,7 +1,8 @@
 const {
   fetchArticleById,
   updateArticleById,
-  insertCommentByArticleId
+  insertCommentByArticleId,
+  fetchCommentByArticleId
 } = require("../models/article-models");
 
 exports.getArticleById = (req, res, next) => {
@@ -24,4 +25,10 @@ exports.postCommentByArticleId = (req, res, next) => {
   const newComment = {article_id, author: username, body} // because that's the format what the table for comment requires
   insertCommentByArticleId(newComment)
   .then((comment) => res.status(201).send({comment}))
+}
+
+exports.getCommentByArticleId = (req, res, next) => {
+  const {article_id} = req.params
+  fetchCommentByArticleId(article_id)
+  .then((comments) => res.status(200).send({comments}))
 }
