@@ -70,5 +70,14 @@ describe("/api", () => {
           expect(body.message).to.eql("Bad Request");
         });
     });
+    it('tests than an article_id that does not exist errors with status code 404 ', () => {
+      return request(app)
+      .get('/api/articles/9999')
+      .expect(404)
+      .then(({body}) => {
+        expect(body.message).to.eql('article_id does not exist')
+      } )
+
+    });
   });
 });
