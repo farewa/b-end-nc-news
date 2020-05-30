@@ -40,3 +40,10 @@ exports.insertCommentByArticleId = (newComment) => {
   .returning("*")
   .then(([comment]) => comment)
 };
+
+exports.fetchCommentByArticleId = (article_id) => {
+  return connection('comments')
+  .select('comment_id', 'votes', 'created_at', 'author', 'body')
+  .where('comments.article_id', article_id)
+  .returning('*')
+}
