@@ -27,31 +27,48 @@ describe("/api", () => {
       return request(app)
         .get("/api/users/icellusedkars")
         .expect(200)
-        .then(({ body: {user} }) => {
-         expect(user).to.have.all.keys('username', 'avatar_url', 'name')
+        .then(({ body: { user } }) => {
+          expect(user).to.have.all.keys("username", "avatar_url", "name");
         });
     });
-    xit('tests that all other methods are not able to used on this endpoint', () => {
-      const methods = ['post', 'put', 'delete', 'patch']
+    xit("tests that all other methods are not able to used on this endpoint", () => {
+      const methods = ["post", "put", "delete", "patch"];
       const methodsNotAllowed = methods.map((method) => {
         return request(app)
-        [method]('api/users/icellusedkars')
-        .expect(405)
-        .then((response) => {
-          expect(response.body.msg).to.eql(['Method Not Allowed'])
-        })
-      })
-      return Promise.all(methodsNotAllowed)
+          [method]("api/users/icellusedkars")
+          .expect(405)
+          .then((response) => {
+            expect(response.body.msg).to.eql(["Method Not Allowed"]);
+          });
+      });
+      return Promise.all(methodsNotAllowed);
     });
   });
-  describe('/articles/:article_id', () => {
+  describe("/articles/:article_id", () => {
     it("tests that GET returns a status of 200 and the specified article ", () => {
       return request(app)
-      .get('/api/articles/1')
-      .expect(200)
-      .then(({body: {article}}) => {
-        expect(article).to.have.all.keys('article_id','comment_count', 'author', 'body','title','topic', 'votes', 'created_at' )
-      })
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).to.have.all.keys(
+            "article_id",
+            "comment_count",
+            "author",
+            "body",
+            "title",
+            "topic",
+            "votes",
+            "created_at"
+          );
+        });
+    });
+    it("tests that an article_id that is in the wrong format errors with status code 400", () => {
+      return request(app)
+        .get("/api/articles/dog")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.message).to.eql("Bad Request");
+        });
     });
   });
 });
