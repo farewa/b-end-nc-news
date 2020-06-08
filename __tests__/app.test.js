@@ -59,6 +59,22 @@ describe("/api", () => {
         expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count', 'body')
       })
     })
+    it('tests status 200: GET request can accept a sort by query', () => {
+      return request(app)
+      .get('/api/articles?sort_by=votes')
+      .expect(200)
+      .then(({body : {articles}}) => {
+        expect(articles).to.be.sortedBy('votes', {descending: true})
+      })
+    })
+    it('tests status 200: GET request can accept an order query', () => {
+      return request(app)
+      .get('/api/articles?order=asc')
+      .expect(200)
+      .then(({body : {articles}}) => {
+        expect(articles).to.be.sortedBy('created_at', {descending: false})
+      })
+    })
   })
   describe("/articles/:article_id", () => {
     it("tests status 200: GET request returns correct status and the specified article object", () => {
