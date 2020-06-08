@@ -56,7 +56,7 @@ describe("/api", () => {
       .expect(200)
       .then(({body: {articles}}) => {
         expect(articles).to.be.an('array')
-        expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count', 'body')
+        expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
       })
     })
     it('tests status 200: GET request can accept a sort by query', () => {
@@ -73,6 +73,14 @@ describe("/api", () => {
       .expect(200)
       .then(({body : {articles}}) => {
         expect(articles).to.be.sortedBy('created_at', {descending: false})
+      })
+    })
+    it("tests status 200: GET request returns filtered article array with only articles relating to a specific author", () => {
+      return request(app)
+      .get('/api/articles?author=butter_bridge')
+      .expect(200)
+      .then(({body: {articles}}) => {
+        expect(articles[0].author).to.eql('butter_bridge')
       })
     })
   })
