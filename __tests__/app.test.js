@@ -49,6 +49,17 @@ describe("/api", () => {
       });
     });
   });
+  describe('/api/articles', () => {
+    it('tests status 200: GET request returns an array of article objects', () => {
+      return request(app)
+      .get('/api/articles')
+      .expect(200)
+      .then(({body: {articles}}) => {
+        expect(articles).to.be.an('array')
+        expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count', 'body')
+      })
+    })
+  })
   describe("/articles/:article_id", () => {
     it("tests status 200: GET request returns correct status and the specified article object", () => {
       return request(app)
