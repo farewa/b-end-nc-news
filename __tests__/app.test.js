@@ -75,12 +75,20 @@ describe("/api", () => {
         expect(articles).to.be.sortedBy('created_at', {descending: false})
       })
     })
-    it("tests status 200: GET request returns filtered article array with only articles relating to a specific author", () => {
+    it("tests status 200: GET request returns filtered article array with only the articles relating to a specific author", () => {
       return request(app)
       .get('/api/articles?author=butter_bridge')
       .expect(200)
       .then(({body: {articles}}) => {
         expect(articles[0].author).to.eql('butter_bridge')
+      })
+    })
+    it("test status 200: GET request returns filtered article with only the articles relating to a specific topic", () => {
+      return request(app)
+      .get('/api/articles?topic=mitch')
+      .expect(200)
+      .then(({body : {articles}}) => {
+        expect(articles[0].topic).to.eql('mitch')
       })
     })
   })
