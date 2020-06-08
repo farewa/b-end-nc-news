@@ -1,5 +1,14 @@
 const connection = require("../db/connection");
 
+exports.fetchAllArticles = () => {
+  return connection
+  .select("articles.*")
+  .from("articles")
+  .leftJoin("comments", "comments.article_id", "articles.article_id")
+  .groupBy("articles.article_id")
+  .count("comments.article_id as comment_count")
+}
+
 exports.fetchArticleById = (article_id) => {
   return connection
     .select(
