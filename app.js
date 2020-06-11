@@ -1,6 +1,6 @@
 const express = require('express')
 const apiRouter = require('./routes/apiRouter')
-const {routeNotFound, badRequest, notFound} = require('./errors')
+const {handleCustomErrors, handlePSQLErrors, routeNotFound} = require('./errors')
 
 const app = express()
 
@@ -8,10 +8,11 @@ app.use(express.json())
 
 app.use('/api', apiRouter)
 
-app.use('/*', routeNotFound)
+app.all('/*', routeNotFound)
 
-app.use(badRequest)
+app.use(handleCustomErrors)
 
-app.use(notFound)
+app.use(handlePSQLErrors)
+
 
 module.exports = app
