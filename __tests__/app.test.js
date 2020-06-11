@@ -24,6 +24,20 @@ describe("/api", () => {
           });
         });
     });
+    describe('errors', () => {
+      it('tests status 405: that all other methods are not able to be used on this endpoint', () => {
+        const methods = ["post", "put", "delete", "patch"];
+        const methodsNotAllowed = methods.map((method) => {
+          return request(app)
+            [method]("/api/topics")
+            .expect(405)
+            .then(({ body: { message } }) => {
+              expect(message).to.eql("Method Not Allowed");
+            });
+        });
+        return Promise.all(methodsNotAllowed)
+      })
+    })
   });
   describe("/users/:username", () => {
     it("tests status 200: GET request returns a username object and the correct status code and message", () => {
@@ -35,7 +49,7 @@ describe("/api", () => {
         });
     });
     describe("errors", () => {
-    it("tests that all other methods are not able to used on this endpoint", () => {
+    it("tests status 405: that all other methods are not able to used on this endpoint", () => {
         const methods = ["post", "put", "delete", "patch"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
@@ -100,7 +114,18 @@ describe("/api", () => {
           console.log(body)
         })
       })
-
+      it("tests status 405: that all other methods are not able to used on this endpoint", () => {
+        const methods = ["post", "put", "delete", "patch"];
+        const methodsNotAllowed = methods.map((method) => {
+          return request(app)
+          [method]('/api/articles')
+          .expect(405)
+          .then(({body: {message}}) => {
+            expect(message).to.eql('Method Not Allowed')
+          })
+        })
+        return Promise.all(methodsNotAllowed)
+      })
     })
   })
   describe("/articles/:article_id", () => {
@@ -140,6 +165,18 @@ describe("/api", () => {
         });
     });
     describe("errors", () => {
+      it("tests status 405: that all other methods are not able to used on this endpoint", () => {
+        const methods = ['put', 'delete', "post"]
+        const methodsNotAllowed = methods.map((method) => {
+          return request(app)
+          [method]('/api/articles/1')
+          .expect(405)
+          .then(({body : {message}}) => {
+            expect(message).to.eql('Method Not Allowed')
+          })
+        })
+        return Promise.all(methodsNotAllowed)
+      })
       it("tests status 400: GET request for an article_id that is in the wrong format errors with correct status code and message", () => {
         return request(app)
           .get("/api/articles/dog")
@@ -218,6 +255,19 @@ describe("/api", () => {
         expect(comments).to.be.sorted({descending: false})
       })
     })
-
+    describe('errors', () => {
+      it("tests status 405: that all other methods are not able to used on this endpoint", () => {
+        const methods = ['put', 'patch', 'delete']
+        const methodsNotAllowed = methods.map((method) => {
+          return request(app)
+          [method]('/api/articles/1/comments')
+          .expect(405)
+          .then(({body: {message}}) => {
+            expect(message).to.eql('Method Not Allowed')
+          })
+        })
+        return Promise.all(methodsNotAllowed)
+      })
+    })
   });
 });
