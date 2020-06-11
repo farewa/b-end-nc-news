@@ -105,13 +105,22 @@ describe("/api", () => {
         expect(articles[0].topic).to.eql('mitch')
       })
     })
+    it('tests status 200: tests that ordering by neither asecending or descending ignores request as sends back articles', () => {
+      return request(app)
+      .get("/api/articles?order=cat")
+      .expect(200)
+      .then(({body : {articles}}) => {
+        expect(articles).to.be.an('array')
+        expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
+      })
+    })
     describe('errors', () => {
       it('tests status 400: tests that sorting by a column that does not exists errors with a bad request', () => {
         return request(app)
         .get('/api/articles?sort_by=apples')
         .expect(400)
-        .then(({body}) => {
-          console.log(body)
+        .then(({body : {message}}) => {
+          expect(message).to.eql('Bad Request')
         })
       })
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
