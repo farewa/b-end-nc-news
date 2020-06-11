@@ -1,15 +1,15 @@
-process.env.NODE_ENV = "test"; // setting environment to test
+process.env.NODE_ENV = "test"; 
 const chai = require('chai')
 const {expect} = chai
 chai.use(require("sams-chai-sorted"));
 
-const app = require("../app"); // the app that we want to test
-const request = require("supertest"); // allows us to mimic url request
-const connection = require("../db/connection"); //
+const app = require("../app"); 
+const request = require("supertest"); 
+const connection = require("../db/connection"); 
 
 describe("/api", () => {
-  beforeEach(() => connection.seed.run()); // allows database to be reseeded before every test
-  after(() => connection.destroy()); // stops tests hanging
+  beforeEach(() => connection.seed.run()); 
+  after(() => connection.destroy()); 
 
   describe("/topics", () => {
     it("tests that GET returns a status of 200 and the topics array", () => {
@@ -34,18 +34,18 @@ describe("/api", () => {
           expect(user).to.have.all.keys("username", "avatar_url", "name");
         });
     });
-    describe("ERRORS", () => {
-      xit("tests that all other methods are not able to used on this endpoint", () => {
+    describe("errors", () => {
+    it("tests that all other methods are not able to used on this endpoint", () => {
         const methods = ["post", "put", "delete", "patch"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
-            [method]("api/users/icellusedkars")
+            [method]("/api/users/icellusedkars")
             .expect(405)
             .then(({ body: { message } }) => {
-              expect(message).to.eql(["Method Not Allowed"]);
+              expect(message).to.eql("Method Not Allowed");
             });
         });
-        return Promise.all(methodsNotAllowed);
+        return Promise.all(methodsNotAllowed)
       });
     });
   });
@@ -83,13 +83,24 @@ describe("/api", () => {
         expect(articles[0].author).to.eql('butter_bridge')
       })
     })
-    it("test status 200: GET request returns filtered article with only the articles relating to a specific topic", () => {
+    it("tests status 200: GET request returns filtered article with only the articles relating to a specific topic", () => {
       return request(app)
       .get('/api/articles?topic=mitch')
       .expect(200)
       .then(({body : {articles}}) => {
         expect(articles[0].topic).to.eql('mitch')
       })
+    })
+    describe('errors', () => {
+      it('tests status 400: tests that sorting by a column that does not exists errors with a bad request', () => {
+        return request(app)
+        .get('/api/articles?sort_by=apples')
+        .expect(400)
+        .then(({body}) => {
+          console.log(body)
+        })
+      })
+
     })
   })
   describe("/articles/:article_id", () => {
@@ -128,7 +139,7 @@ describe("/api", () => {
           expect(article).to.not.change;
         });
     });
-    describe("ERRORS", () => {
+    describe("errors", () => {
       it("tests status 400: GET request for an article_id that is in the wrong format errors with correct status code and message", () => {
         return request(app)
           .get("/api/articles/dog")
