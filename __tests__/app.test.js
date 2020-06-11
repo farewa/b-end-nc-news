@@ -135,6 +135,14 @@ describe("/api", () => {
         })
         return Promise.all(methodsNotAllowed)
       })
+      it('tests status 404: tests that passing a query with an author that does not exist errors with route not found', () => {
+        return request(app)
+        .get('/api/articles?author=not-an-author')
+        .expect(404)
+        .then(({body : {message}}) => {
+          expect(message).to.eql('Route Not Found')
+        })
+      })
     })
   })
   describe("/articles/:article_id", () => {
