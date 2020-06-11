@@ -18,6 +18,10 @@ exports.fetchAllArticles = (sort_by, order, author, topic) => {
     if (author) query.where("articles.author", author)
     if (topic) query.where("articles.topic", topic)
   })
+  .then((articles) => {
+    if (articles.length === 0) return Promise.reject({status: 404, message: 'Route Not Found'})
+    else return articles
+  })
 }
 
 exports.fetchArticleById = (article_id) => {
