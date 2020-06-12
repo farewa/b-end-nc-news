@@ -114,6 +114,14 @@ describe("/api", () => {
         expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
       })
     })
+    it("tests status 200: GET request does not error when querying for an author that exists with no articles", () => {
+      return request(app)
+      .get('/api/articles?author=lurker')
+      .expect(200)
+      .then(({body: {articles}}) => {
+        expect(articles).to.be.an('array')
+      })
+    })
     describe('errors', () => {
       it('tests status 400: tests that sorting by a column that does not exists errors with a bad request', () => {
         return request(app)
