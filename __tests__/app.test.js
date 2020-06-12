@@ -322,11 +322,16 @@ describe("/api", () => {
           expect(message).to.eql('Bad Request')
         })
       })
-      it.only('tests status 404: POST request errors when posting to a valid article_id that does not exist', () => {
+      it('tests status 404: POST request errors when posting to a valid article_id that does not exist', () => {
         return request(app)
         .post('/api/articles/1000/comments')
+        .send({
+          username: "icellusedkars",
+          body: "the weather outside Northcoders is particularly bright today"})
         .expect(404)
-        .then(({body}) => console.log(body))
+        .then(({body: {message}}) => {
+          expect(message).to.eql('Route not found')
+        })
       })
     })
   });
@@ -340,6 +345,13 @@ describe("/api", () => {
         expect(comment.votes).to.equal(17)
         expect(comment).to.have.all.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
       })
+    })
+    it.only('tests status 200: PATCH request ignores a body that is sent with no inc_votes', () => {
+      return request(app)
+      .patch('/api/comments/2')
+      .send()
+      .expect(200)
+      .then(({body}) => console.log(body))
     })
     it("tests status 204: DELETE request responds with the correct status and no content", () => {
       return request(app)
