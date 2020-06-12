@@ -12,8 +12,8 @@ articleRouter.route('/:article_id')
 .all(methodNotAllowed)
 
 articleRouter.route('/:article_id/comments')
-.post(postCommentByArticleId)
 .get(getCommentByArticleId)
+.post(postCommentByArticleId)
 .all(methodNotAllowed)
 
 
