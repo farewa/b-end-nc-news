@@ -316,5 +316,10 @@ describe("/api", () => {
         expect(comment).to.have.all.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
       })
     })
+    it("tests status 204: DELETE request responds with the correct status and no content", () => {
+      return request(app)
+      .delete('/api/comments/2')
+      .expect(204)
+    })
   })
 });
