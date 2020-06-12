@@ -321,5 +321,19 @@ describe("/api", () => {
       .delete('/api/comments/2')
       .expect(204)
     })
+    describe('errors', () => {
+      it('tests status 405: that all other methods are not able to be used on this endpoint', () => {
+        const methods = ['get', 'post', 'put']
+        const invalidMethods = methods.map((method) => {
+          return request(app)
+          [method]('/api/comments/2')
+          .expect(405)
+          .then(({body: {message}}) => {
+            expect(message).to.eql('Method Not Allowed')
+          })
+        })
+        return Promise.all(invalidMethods)
+      })
+    })
   })
 });
