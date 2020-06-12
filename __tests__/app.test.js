@@ -311,6 +311,23 @@ describe("/api", () => {
           expect(message).to.eql('Route not found')
         })
       })
+      it('tests status 400: POST request errors when not all of the required keys are given', () => {
+        return request(app)
+        .post("/api/articles/1/comments")
+        .send({
+          body: "the weather outside Northcoders is particularly bright today"
+        })
+        .expect(400)
+        .then(({body: {message}}) => {
+          expect(message).to.eql('Bad Request')
+        })
+      })
+      it.only('tests status 404: POST request errors when posting to a valid article_id that does not exist', () => {
+        return request(app)
+        .post('/api/articles/1000/comments')
+        .expect(404)
+        .then(({body}) => console.log(body))
+      })
     })
   });
   describe('/api/comments/:comment_id', () => {
