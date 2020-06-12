@@ -120,6 +120,16 @@ describe("/api", () => {
       .expect(200)
       .then(({body: {articles}}) => {
         expect(articles).to.be.an('array')
+        expect(articles.length).to.equal(0)
+      })
+    })
+    it("tests status 200: GET request does not error when querying for a topic that exists with no articles", () => {
+      return request(app)
+      .get('/api/articles?topic=paper')
+      .expect(200)
+      .then(({body: {articles}}) => {
+        expect(articles).to.be.an('array')
+        expect(articles.length).to.equal(0)
       })
     })
     describe('errors', () => {
