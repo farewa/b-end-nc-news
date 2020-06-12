@@ -96,5 +96,8 @@ exports.fetchCommentByArticleId = (article_id, sort_by, order) => {
     .from('comments')
     .where("comments.article_id", article_id)
     .orderBy(sort_by || "created_at", order || 'desc')
-    .returning("*");
+    .then((article) =>{
+      if (!article.length) return Promise.reject({status: 404, message: "Route not found"})
+      else return article
+    })
 };
