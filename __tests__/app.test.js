@@ -303,6 +303,14 @@ describe("/api", () => {
         })
         return Promise.all(methodsNotAllowed)
       })
+      it('tests status 404: GET request errors when given a valid article_id that does not exist', () => {
+        return request(app)
+        .get('/api/articles/1000/comments')
+        .expect(404)
+        .then(({body: {message}}) => {
+          expect(message).to.eql('Route not found')
+        })
+      })
     })
   });
   describe('/api/comments/:comment_id', () => {
