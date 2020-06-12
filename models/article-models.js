@@ -78,10 +78,14 @@ exports.updateArticleById = (article_id, inc_votes = 0) => {
 };
 
 exports.insertCommentByArticleId = (newComment) => {
+  if (Object.values(newComment).includes(undefined)) return Promise.reject({status: 400, message: 'Bad Request'})
   return connection("comments")
     .insert(newComment)
     .returning("*")
-    .then(([comment]) => comment);
+    .then(([comment]) => {
+      if (!comment) return Promise.reject({status: 404, message: 'Route not found'})
+      else return comment
+    });
 };
 
 exports.fetchCommentByArticleId = (article_id, sort_by, order) => {
@@ -96,7 +100,7 @@ exports.fetchCommentByArticleId = (article_id, sort_by, order) => {
     .from('comments')
     .where("comments.article_id", article_id)
     .orderBy(sort_by || "created_at", order || 'desc')
-    .then((article) =>{
+    .then((article) => {
       if (!article.length) return Promise.reject({status: 404, message: "Route not found"})
       else return article
     })
