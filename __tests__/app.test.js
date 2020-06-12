@@ -306,11 +306,11 @@ describe("/api", () => {
     })
   });
   describe('/api/comments/:comment_id', () => {
-    it("tests status 201: PATCH request responds with the newly updated comment", () => {
+    it("tests status 200: PATCH request responds with the newly updated comment", () => {
       return request(app)
       .patch('/api/comments/1')
       .send({inc_votes : 1 })
-      .expect(201)
+      .expect(200)
       .then(({body: {comment}}) => {
         expect(comment.votes).to.equal(17)
         expect(comment).to.have.all.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
