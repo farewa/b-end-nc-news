@@ -20,7 +20,10 @@ exports.fetchAllArticles = (sort_by, order, author, topic) => {
   })
   .then((articles) => {
     if (articles.length !== 0) return [articles]
-    else return Promise.all([articles, queryChecker(author)])
+    else {
+      if (author) return Promise.all([articles, queryChecker('username', 'users', author)])
+      else if (topic) return Promise.all([articles, queryChecker('slug', 'topics', topic)])  
+    }
     // else if (!articles.length && author) return Promise.all([articles, queryChecker(author)])
   })
   .then(([ articles, ifExists]) => {
@@ -29,13 +32,13 @@ exports.fetchAllArticles = (sort_by, order, author, topic) => {
   })
 }
 
-const queryChecker = (author) => {
+const queryChecker = (column, table, value) => {
   return connection
-  .select('username')
-  .from('users')
-  .where("users.username", author)
-  .then((user)=> {
-    if (user.length === 0) return Promise.reject({status: 404, message: 'Route Not Found'})
+  .select(column)
+  .from(table)
+  .where({[column]: value})
+  .then((response)=> {
+    if (response.length === 0) return Promise.reject({status: 404, message: 'Route Not Found'})
     else return true
   })
 }
