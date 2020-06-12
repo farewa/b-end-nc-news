@@ -17,11 +17,15 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handlePSQLErrors = (err, req, res, next) => {
-  console.log( 'handle')
   const err400Codes = ["22P02","42703"];
+  const err404Codes = ['23502', '23503']
   if (err400Codes.includes(err.code)) {
     res.status(400).send({ message: err.msg || "Bad Request" });
-  } else next(err);
+  }
+  else if (err404Codes.includes(err.code)) {
+    res.status(404).send({message: err.msg || 'Route not found'})
+  }
+   else next(err);
 };
 
 
