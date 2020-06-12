@@ -305,4 +305,13 @@ describe("/api", () => {
       })
     })
   });
+  describe('/api/comments/:comment_id', () => {
+    it.only("tests status 201: PATCH request responds with the newly updated comment", () => {
+      return request(app)
+      .patch('/api/comments/1')
+      .send({inc_votes : 1 })
+      .expect(201)
+      .then(({body}) => console.log(body))
+    })
+  })
 });
