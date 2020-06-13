@@ -188,6 +188,15 @@ describe("/api", () => {
           expect(message).to.eql('Bad Request')
         })
       })
+      it("tests status 400: POST request errors when not all of the required keys are given", () => {
+        return request(app)
+        .post('/api/articles')
+        .send({body: 'Almost everything tastes better with olive oil, salt and pepper'})
+        .expect(400)
+        .then(({body: {message}}) => {
+          expect(message).to.eql('Bad Request')
+        })
+      })
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
         const methods = ["put", "delete", "patch"];
         const methodsNotAllowed = methods.map((method) => {
