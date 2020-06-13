@@ -88,7 +88,7 @@ exports.insertCommentByArticleId = (newComment) => {
     });
 };
 
-exports.fetchCommentByArticleId = (article_id, sort_by, order) => {
+exports.fetchCommentByArticleId = (article_id, sort_by, order, limit = 10) => {
   return connection("comments")
     .select(
       "comments.comment_id",
@@ -99,6 +99,7 @@ exports.fetchCommentByArticleId = (article_id, sort_by, order) => {
     )
     .from('comments')
     .where("comments.article_id", article_id)
+    .limit(limit)
     .orderBy(sort_by || "created_at", order || 'desc')
     .then((comments) => {
       if (comments.length !== 0) return [comments]
