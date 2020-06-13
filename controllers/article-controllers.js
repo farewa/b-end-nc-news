@@ -47,8 +47,10 @@ exports.postCommentByArticleId = (req, res, next) => {
 }
 
 exports.postArticle = (req, res, next) => {
-  const newArticle = {...req.body}
+  const {title, body, topic, author} = req.body
+  const newArticle = {title, body, topic, author}
   insertArticle(newArticle)
   .then((article) => res.status(201).send({article}))
+  .catch(next)
 }
 
