@@ -17,5 +17,6 @@ exports.removeCommentById = (comment_id) => {
     .delete()
     .then((response) => {
         if (response) return true
+        else return Promise.reject({status: 404, message: 'Route not found'})
     })
 }
