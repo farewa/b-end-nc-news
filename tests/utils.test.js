@@ -122,7 +122,5 @@ describe("formatComments", () => {
     }];
     expect(formatComments(comment, articleRef)).to.eql(formattedComment)
   });
-  
-
 });
 

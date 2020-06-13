@@ -24,11 +24,9 @@ exports.fetchAllArticles = (sort_by, order, author, topic) => {
       if (author) return Promise.all([articles, queryChecker('username', 'users', author)])
       else if (topic) return Promise.all([articles, queryChecker('slug', 'topics', topic)])  
     }
-    // else if (!articles.length && author) return Promise.all([articles, queryChecker(author)])
   })
   .then(([ articles, ifExists]) => {
     if (ifExists || articles.length) return articles
-    // else return Promise.reject({status: 404, message: 'Route Not Found'})
   })
 }
 

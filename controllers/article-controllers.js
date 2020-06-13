@@ -39,7 +39,7 @@ exports.getCommentByArticleId = (req, res, next) => {
 exports.postCommentByArticleId = (req, res, next) => {
   const {article_id} = req.params
   const {username, body} = req.body
-  const newComment = {article_id, author: username, body} // because that's the format what the table for comment requires
+  const newComment = {article_id, author: username, body} 
   insertCommentByArticleId(newComment)
   .then((comment) => res.status(201).send({comment}))
   .catch(next)
