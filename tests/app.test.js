@@ -11,7 +11,7 @@ describe("/api", () => {
 
   beforeEach(() => connection.seed.run()); 
   after(() => connection.destroy()); 
-  
+
   describe("/topics", () => {
     it("tests that GET returns a status of 200 and the topics array", () => {
       return request(app)
@@ -80,6 +80,25 @@ describe("/api", () => {
       .then(({body: {articles}}) => {
         expect(articles).to.be.an('array')
         expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
+      })
+    })
+    it('tests status 201: POST request returns the newly posted article', () => {
+      return request(app)
+      .post("/api/articles")
+      .send({title: 'paper maché', 
+             body: 'did anybody else use paper maché a bit too much when they were in primary school?',
+             topic: 'paper', 
+             author: 'butter_bridge'})
+      .expect(201)
+      .then(({body: {article}}) => {
+        expect(article).include(
+          {title: 'paper maché',
+          body: 'did anybody else use paper maché a bit too much when they were in primary school?',
+          votes: 0,
+          topic: 'paper',
+          author: 'butter_bridge'}
+        )
+        expect(article).to.have.all.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at')
       })
     })
     describe('queries', () => {
@@ -170,7 +189,7 @@ describe("/api", () => {
         })
       })
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
-        const methods = ["post", "put", "delete", "patch"];
+        const methods = ["put", "delete", "patch"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
           [method]('/api/articles')
