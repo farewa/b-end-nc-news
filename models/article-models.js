@@ -38,7 +38,7 @@ const queryChecker = (column, table, value) => {
   .from(table)
   .where({[column]: value})
   .then((response)=> {
-    if (response.length === 0) return Promise.reject({status: 404, message: 'Route Not Found'})
+    if (response.length === 0) return Promise.reject({status: 404, message: 'Route not found'})
     else return true
   })
 }
@@ -100,8 +100,12 @@ exports.fetchCommentByArticleId = (article_id, sort_by, order) => {
     .from('comments')
     .where("comments.article_id", article_id)
     .orderBy(sort_by || "created_at", order || 'desc')
-    .then((article) => {
-      if (!article.length) return Promise.reject({status: 404, message: "Route not found"})
-      else return article
+    .then((comments) => {
+      if (comments.length !== 0) return [comments]
+      else return Promise.all([comments, queryChecker('article_id', 'articles', article_id)])
+    })
+    .then(([comments, ifExists]) => {
+      if (ifExists || comments.length) return comments
     })
 };
+
