@@ -77,7 +77,7 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of comments with the associated article_id",
-    "queries": ["sort_by", "order"],
+    "queries": ["sort_by", "order", "page", "limit"],
     "exampleResponse": {
       "comments": [
         {
