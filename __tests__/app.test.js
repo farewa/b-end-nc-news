@@ -374,10 +374,18 @@ describe("/api", () => {
         })
         return Promise.all(invalidMethods)
       })
-      it('tests status 404: PATCH request errors when posting to a valid article_id that does not exist', () => {
+      it('tests status 404: PATCH request errors when posting to a valid comment_id that does not exist', () => {
         return request(app)
         .patch('/api/comments/1000')
         .send({ inc_votes : 1 })
+        .expect(404)
+        .then(({body: {message}}) => {
+          expect(message).to.eql('Route not found')
+        })
+      })
+      it('tests status 404: DELETE request errors when trying to delete a valid comment_id that does not exist', () => {
+        return request(app)
+        .delete('/api/comments/1000')
         .expect(404)
         .then(({body: {message}}) => {
           expect(message).to.eql('Route not found')
