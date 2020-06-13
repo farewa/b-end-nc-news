@@ -112,8 +112,12 @@ exports.fetchCommentByArticleId = (article_id, sort_by, order, limit = 10, page 
 };
 
 exports.insertArticle = (newArticle) => {
+  if (Object.values(newArticle).includes(undefined)) return Promise.reject({status: 400, message: 'Bad Request'})
   return connection('articles')
   .insert(newArticle)
   .returning('*')
-  .then(([article]) => article)
+  .then(([article]) => {
+    if (!article) return Promise.reject({status: 404, message: 'Route not found'})
+    else return article
+  })
 }
