@@ -97,12 +97,20 @@ describe("/api", () => {
           expect(articles).to.be.sortedBy('created_at', {descending: false})
         })
       })
-      it('tests status 200: GET request responds with a limited number of articles with a limit query', () => {
+      it('tests status 200: GET request returns a limited number of articles with a limit query', () => {
         return request(app)
         .get('/api/articles?limit=5')
         .expect(200)
         .then(({body: {articles}}) => {
           expect(articles.length).to.equal(5)
+        })
+      })
+      it('tests status 200: GET request returns a limited number of articles from a specific page when passed both queries', () => {
+        return request(app)
+        .get('/api/articles?limit=5&page=2')
+        .expect(200)
+        .then(({body: {articles}}) => {
+          expect(articles[0].title).to.eql('A')
         })
       })
       it("tests status 200: GET request returns filtered article array with only the articles relating to a specific author", () => {
