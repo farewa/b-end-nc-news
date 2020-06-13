@@ -3,11 +3,11 @@ const topicRouter = require('./topicRouter')
 const userRouter = require('./userRouter')
 const articleRouter = require('./articleRouter')
 const commentRouter = require('./commentRouter')
-const {getApi} = require('../controllers/endpoints-controller')
+const {getJSON} = require('../controllers/endpoints-controller')
 const {methodNotAllowed} = require('../errors')
 
 apiRouter.route('/')
-.get(getApi)
+.get(getJSON)
 .all(methodNotAllowed)
 
 apiRouter.use('/topics', topicRouter)
