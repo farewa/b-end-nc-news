@@ -334,6 +334,15 @@ describe("/api", () => {
           expect(comments.length).to.equal(5)
         })
       })
+      it("GET request returns a limited number of comments from a specific page when passed both queries", () => {
+        return request(app)
+        .get('/api/articles/1/comments?limit=2&page=2')
+        .expect(200)
+        .then(({body: {comments}}) => {
+          expect(comments.length).to.equal(2)
+          expect(comments[0].body).to.eql(' I carry a log — yes. Is it funny to you? It is not to me.')
+        })
+      })
     })
     describe('errors', () => {
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
