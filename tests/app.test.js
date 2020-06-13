@@ -298,7 +298,14 @@ describe("/api", () => {
             expect(message).to.eql("Bad Request");
           });
       });
-      it("tests status 404: DELETE request errors when trying to delete a valid comment_id that does not exist")
+      it("tests status 404: DELETE request errors when trying to delete a valid article_id that does not exist", () => {
+        return request(app)
+        .delete('/api/articles/1000')
+        .expect(404)
+        .then(({body: {message}}) => {
+          expect(message).to.eql('Route not found')
+        })
+      })
     });
   });
   describe("/articles/:article_id/comments", () => {
