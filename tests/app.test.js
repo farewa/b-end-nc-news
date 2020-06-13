@@ -80,65 +80,75 @@ describe("/api", () => {
         expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
       })
     })
-    it('tests status 200: GET request can accept a sort by query', () => {
-      return request(app)
-      .get('/api/articles?sort_by=votes')
-      .expect(200)
-      .then(({body : {articles}}) => {
-        expect(articles).to.be.sortedBy('votes', {descending: true})
+    describe('queries', () => {
+      it('tests status 200: GET request can accept a sort by query', () => {
+        return request(app)
+        .get('/api/articles?sort_by=votes')
+        .expect(200)
+        .then(({body : {articles}}) => {
+          expect(articles).to.be.sortedBy('votes', {descending: true})
+        })
       })
-    })
-    it('tests status 200: GET request can accept an order query', () => {
-      return request(app)
-      .get('/api/articles?order=asc')
-      .expect(200)
-      .then(({body : {articles}}) => {
-        expect(articles).to.be.sortedBy('created_at', {descending: false})
+      it('tests status 200: GET request can accept an order query', () => {
+        return request(app)
+        .get('/api/articles?order=asc')
+        .expect(200)
+        .then(({body : {articles}}) => {
+          expect(articles).to.be.sortedBy('created_at', {descending: false})
+        })
       })
-    })
-    it("tests status 200: GET request returns filtered article array with only the articles relating to a specific author", () => {
-      return request(app)
-      .get('/api/articles?author=butter_bridge')
-      .expect(200)
-      .then(({body: {articles}}) => {
-        expect(articles[0].author).to.eql('butter_bridge')
+      it('tests status 200: GET request responds with a limited number of articles with a limit query', () => {
+        return request(app)
+        .get('/api/articles?limit=5')
+        .expect(200)
+        .then(({body: {articles}}) => {
+          expect(articles.length).to.equal(5)
+        })
       })
-    })
-    it("tests status 200: GET request returns filtered article with only the articles relating to a specific topic", () => {
-      return request(app)
-      .get('/api/articles?topic=mitch')
-      .expect(200)
-      .then(({body : {articles}}) => {
-        expect(articles[0].topic).to.eql('mitch')
+      it("tests status 200: GET request returns filtered article array with only the articles relating to a specific author", () => {
+        return request(app)
+        .get('/api/articles?author=butter_bridge')
+        .expect(200)
+        .then(({body: {articles}}) => {
+          expect(articles[0].author).to.eql('butter_bridge')
+        })
       })
-    })
-    it('tests status 200: GET request tests that ordering by neither asecending or descending ignores request as sends back articles', () => {
-      return request(app)
-      .get("/api/articles?order=cat")
-      .expect(200)
-      .then(({body : {articles}}) => {
-        expect(articles).to.be.an('array')
-        expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
+      it("tests status 200: GET request returns filtered article with only the articles relating to a specific topic", () => {
+        return request(app)
+        .get('/api/articles?topic=mitch')
+        .expect(200)
+        .then(({body : {articles}}) => {
+          expect(articles[0].topic).to.eql('mitch')
+        })
       })
-    })
-    it("tests status 200: GET request does not error when querying for an author that exists with no articles", () => {
-      return request(app)
-      .get('/api/articles?author=lurker')
-      .expect(200)
-      .then(({body: {articles}}) => {
-        expect(articles).to.be.an('array')
-        expect(articles.length).to.equal(0)
+      it('tests status 200: GET request tests that ordering by neither asecending or descending ignores request as sends back articles', () => {
+        return request(app)
+        .get("/api/articles?order=cat")
+        .expect(200)
+        .then(({body : {articles}}) => {
+          expect(articles).to.be.an('array')
+          expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
+        })
       })
-    })
-    it("tests status 200: GET request does not error when querying for a topic that exists with no articles", () => {
-      return request(app)
-      .get('/api/articles?topic=paper')
-      .expect(200)
-      .then(({body: {articles}}) => {
-        expect(articles).to.be.an('array')
-        expect(articles.length).to.equal(0)
+      it("tests status 200: GET request does not error when querying for an author that exists with no articles", () => {
+        return request(app)
+        .get('/api/articles?author=lurker')
+        .expect(200)
+        .then(({body: {articles}}) => {
+          expect(articles).to.be.an('array')
+          expect(articles.length).to.equal(0)
+        })
       })
-    })
+      it("tests status 200: GET request does not error when querying for a topic that exists with no articles", () => {
+        return request(app)
+        .get('/api/articles?topic=paper')
+        .expect(200)
+        .then(({body: {articles}}) => {
+          expect(articles).to.be.an('array')
+          expect(articles.length).to.equal(0)
+        })
+      })
+    }) 
     describe('errors', () => {
       it('tests status 400: tests that sorting by a column that does not exists errors with a bad request', () => {
         return request(app)
@@ -281,22 +291,6 @@ describe("/api", () => {
           );
         });
     });
-    it("tests status 200: GET request returns a sorted array of comments when passed a sort_by query", () => {
-      return request(app)
-      .get('/api/articles/1/comments?sort_by=votes')
-      .expect(200)
-      .then(({body: {comments}}) => {
-        expect(comments).to.be.sortedBy('votes', {descending: true})
-      })
-    })
-    it('tests status 200: GET request returns a sorted array sorted by order but defaults to descending when a specifier is not passed', () => {
-      return request(app)
-      .get("/api/articles/1/comments?order=asc")
-      .expect(200)
-      .then(({body: {comments}}) => {
-        expect(comments).to.be.sorted({descending: false})
-      })
-    })
     it('tests status 200: GET request responds with an empty array when the article_id exists but has no comments', () => {
       return request(app)
       .get('/api/articles/2/comments')
@@ -304,6 +298,24 @@ describe("/api", () => {
       .then(({body: {comments}}) => {
         expect(comments).to.be.an('array')
         expect(comments.length).to.equal(0)
+      })
+    })
+    describe('queries', () => {
+      it("tests status 200: GET request returns a sorted array of comments when passed a sort_by query", () => {
+        return request(app)
+        .get('/api/articles/1/comments?sort_by=votes')
+        .expect(200)
+        .then(({body: {comments}}) => {
+          expect(comments).to.be.sortedBy('votes', {descending: true})
+        })
+      })
+      it('tests status 200: GET request returns a sorted array sorted by order but defaults to descending when a specifier is not passed', () => {
+        return request(app)
+        .get("/api/articles/1/comments?order=asc")
+        .expect(200)
+        .then(({body: {comments}}) => {
+          expect(comments).to.be.sorted({descending: false})
+        })
       })
     })
     describe('errors', () => {
