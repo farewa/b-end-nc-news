@@ -61,6 +61,14 @@ describe("/api", () => {
         });
         return Promise.all(methodsNotAllowed)
       });
+    it("tests status 404: GET request errors when trying to delete a valid user_id that does not exist", () => {
+      return request(app)
+      .get('/api/users/not-a-username')
+      .expect(404)
+      .then(({body: {message}}) => {
+        expect(message).to.eql('Route not found')
+      })
+    })
     });
   });
   describe('/api/articles', () => {
