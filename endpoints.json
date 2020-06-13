@@ -9,6 +9,17 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "GET /api/users/:username": {
+    "description": "serves a user object",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "icellusedkars",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        "name": "sam"
+      }
+    }
+  },
   "GET /api/articles": {
     "description": "serves an array of all topics",
     "queries": ["author", "topic", "sort_by", "order"],
@@ -19,9 +30,107 @@
           "topic": "cooking",
           "author": "weegembump",
           "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": "2019-11-15T12:21:54.171Z"
+        }, 
+        {
+          "title": "Living in the shadow of a great man",
+          "topic": "mitch",
+          "author": "butter_bridge",
+          "body": "I find this existence challenging",
+          "created_at": "2018-11-15T12:21:54.171Z"
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves an article object",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "author": "butter_bridge",
+        "title": "Living in the shadow of a great man",
+        "article_id": 1,
+        "body": "I find this existence challenging",
+        "topic": "mitch",
+        "created_at": "2018-11-15T12:21:54.171Z",
+        "votes": 10,
+        "comment_count": 13
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "serves the updated article",
+    "queries": [],
+    "examplePatch": {"inc_votes": 1},
+    "exampleResponse": {
+      "article": {
+        "author": "butter_bridge",
+        "title": "Living in the shadow of a great man",
+        "article_id": 1,
+        "body": "I find this existence challenging",
+        "topic": "mitch",
+        "created_at": "2018-11-15T12:21:54.171Z",
+        "votes": 11,
+        "comment_count": 13
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments with the associated article_id",
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 2,
+          "votes": 14,
+          "created_at": "2016-11-22T12:36:03.389Z",
+          "author": "butter_bridge",
+          "body": "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky."
+        },
+        {
+          "comment_id": 3,
+          "votes": 100,
+          "created_at": "2015-11-23T12:36:03.389Z",
+          "author": "icellusedkars",
+          "body": "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works."
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment associated with the article",
+    "queries": [],
+    "examplePost": {
+      "username": "icellusedkars",
+      "body": "the weather outside is particularly bright today"
+    },
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 19,
+        "author": "icellusedkars",
+        "article_id": 1,
+        "votes": 0,
+        "created_at": "2020-06-13T13:06:02.630Z",
+        "body": "the weather outside is particularly bright today"
+      }
+    }
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "serves the updated comment",
+    "queries": [],
+    "examplePatch": {"inc_votes" : 1},
+    "exampleResponse": {
+      "comment_id": 1,
+      "author": "butter_bridge",
+      "article_id": 9,
+      "votes": 17,
+      "created_at": "2017-11-22T12:36:03.389Z",
+      "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "serves the correct status code and no content",
+    "queries": [],
+    "exampleResponse": []
   }
 }
