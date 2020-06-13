@@ -5,5 +5,8 @@ exports.fetchUserByUsername = (username) => {
     .select("*")
     .from("users")
     .where("users.username", username)
-    .then(([user]) => user )
+    .then(([user]) => {
+      if (!user) return Promise.reject({status: 404, message: 'Route not found'})
+      else return user
+    })
 };
