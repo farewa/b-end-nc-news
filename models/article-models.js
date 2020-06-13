@@ -1,6 +1,6 @@
 const connection = require("../db/connection");
 
-exports.fetchAllArticles = (sort_by, order, author, topic, limit = 10) => {
+exports.fetchAllArticles = (sort_by, order, author, topic, limit = 10, page = 1) => {
   return connection
   .select(
     "articles.author", 
@@ -14,6 +14,7 @@ exports.fetchAllArticles = (sort_by, order, author, topic, limit = 10) => {
   .groupBy("articles.article_id")
   .count("comments.article_id as comment_count")
   .limit(limit)
+  .offset(page * limit - limit)
   .orderBy(sort_by || 'created_at', order || 'desc')
   .modify((query) => {
     if (author) query.where("articles.author", author)
