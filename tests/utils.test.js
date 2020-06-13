@@ -123,6 +123,6 @@ describe("formatComments", () => {
     expect(formatComments(comment, articleRef)).to.eql(formattedComment)
   });
   
-  // do I need one more test?
+
 });
 
