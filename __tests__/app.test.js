@@ -346,12 +346,15 @@ describe("/api", () => {
         expect(comment).to.have.all.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
       })
     })
-    it.only('tests status 200: PATCH request ignores a body that is sent with no inc_votes', () => {
+    it('tests status 200: PATCH request ignores a body that is sent with no inc_votes', () => {
       return request(app)
       .patch('/api/comments/2')
       .send()
       .expect(200)
-      .then(({body}) => console.log(body))
+      .then(({body: {comment}}) => {
+        expect(comment).to.have.all.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
+        expect(comment.votes).to.not.change
+      })
     })
     it("tests status 204: DELETE request responds with the correct status and no content", () => {
       return request(app)
@@ -370,6 +373,15 @@ describe("/api", () => {
           })
         })
         return Promise.all(invalidMethods)
+      })
+      it('tests status 404: PATCH request errors when posting to a valid article_id that does not exist', () => {
+        return request(app)
+        .patch('/api/comments/1000')
+        .send({ inc_votes : 1 })
+        .expect(404)
+        .then(({body: {message}}) => {
+          expect(message).to.eql('Route not found')
+        })
       })
     })
   })
