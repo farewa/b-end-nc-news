@@ -8,8 +8,10 @@ const request = require("supertest");
 const connection = require("../db/connection"); 
 
 describe("/api", () => {
+
   beforeEach(() => connection.seed.run()); 
   after(() => connection.destroy()); 
+  
   describe("/topics", () => {
     it("tests that GET returns a status of 200 and the topics array", () => {
       return request(app)
