@@ -111,3 +111,9 @@ exports.fetchCommentByArticleId = (article_id, sort_by, order, limit = 10, page 
     })
 };
 
+exports.insertArticle = (newArticle) => {
+  return connection('articles')
+  .insert(newArticle)
+  .returning('*')
+  .then(([article]) => article)
+}
