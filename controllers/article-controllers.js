@@ -3,7 +3,8 @@ const {
   fetchArticleById,
   updateArticleById,
   insertCommentByArticleId,
-  fetchCommentByArticleId
+  fetchCommentByArticleId,
+  insertArticle
 } = require("../models/article-models");
 
 exports.getAllArticles = (req, res, next) => {
@@ -45,4 +46,9 @@ exports.postCommentByArticleId = (req, res, next) => {
   .catch(next)
 }
 
+exports.postArticle = (req, res, next) => {
+  const newArticle = {...req.body}
+  insertArticle(newArticle)
+  .then((article) => res.status(201).send({article}))
+}
 
