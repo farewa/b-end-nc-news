@@ -255,9 +255,14 @@ describe("/api", () => {
           expect(article).to.not.change;
         });
     });
+    it("tests status 204: DELETE request responds with the correct status and no content", () => {
+      return request(app)
+      .delete('/api/articles/1')
+      .expect(204)
+    })
     describe("errors", () => {
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
-        const methods = ['put', 'delete', "post"]
+        const methods = ['put', "post"]
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
           [method]('/api/articles/1')
@@ -293,6 +298,7 @@ describe("/api", () => {
             expect(message).to.eql("Bad Request");
           });
       });
+      it("tests status 404: DELETE request errors when trying to delete a valid comment_id that does not exist")
     });
   });
   describe("/articles/:article_id/comments", () => {
