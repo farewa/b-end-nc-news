@@ -111,6 +111,7 @@ describe("/api", () => {
         .expect(200)
         .then(({body: {articles}}) => {
           expect(articles[0].title).to.eql('A')
+          expect(articles.length).to.equal(5)
         })
       })
       it("tests status 200: GET request returns filtered article array with only the articles relating to a specific author", () => {
@@ -323,6 +324,14 @@ describe("/api", () => {
         .expect(200)
         .then(({body: {comments}}) => {
           expect(comments).to.be.sorted({descending: false})
+        })
+      })
+      it("tests status 200: GET request returns a limited number of comments with a limit query", () => {
+        return request(app)
+        .get('/api/articles/1/comments?limit=5')
+        .expect(200)
+        .then(({body: {comments}}) => {
+          expect(comments.length).to.equal(5)
         })
       })
     })
