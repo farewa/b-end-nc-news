@@ -121,3 +121,13 @@ exports.insertArticle = (newArticle) => {
     else return article
   })
 }
+
+exports.removeArticleById = (article_id) => {
+  return connection('articles')
+  .where('article_id', article_id)
+  .delete()
+  .then((response) => {
+    if (response) return true
+    else return Promise.reject({status: 404, message: 'Route not found'})
+})
+}
