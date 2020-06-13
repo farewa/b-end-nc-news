@@ -30,8 +30,8 @@ exports.patchArticleById = (req, res, next) => {
 
 exports.getCommentByArticleId = (req, res, next) => {
   const {article_id} = req.params
-  const {sort_by, order, limit} = req.query
-  fetchCommentByArticleId(article_id, sort_by, order, limit)
+  const {sort_by, order, limit, page} = req.query
+  fetchCommentByArticleId(article_id, sort_by, order, limit, page)
   .then((comments) => res.status(200).send({comments}))
   .catch(next)
 }
