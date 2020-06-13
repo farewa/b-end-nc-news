@@ -10,7 +10,11 @@ const connection = require("../db/connection");
 describe("/api", () => {
   beforeEach(() => connection.seed.run()); 
   after(() => connection.destroy()); 
-
+  it('responds with JSON with endpoints', () => {
+    return request(app)
+    .get('/api')
+    .expect(200)
+  })
   describe("/topics", () => {
     it("tests that GET returns a status of 200 and the topics array", () => {
       return request(app)
@@ -71,7 +75,7 @@ describe("/api", () => {
     })
     });
   });
-  describe('/api/articles', () => {
+  describe('/articles', () => {
     it('tests status 200: GET request returns an array of article objects', () => {
       return request(app)
       .get('/api/articles')
@@ -113,7 +117,7 @@ describe("/api", () => {
         expect(articles[0].topic).to.eql('mitch')
       })
     })
-    it('tests status 200: tests that ordering by neither asecending or descending ignores request as sends back articles', () => {
+    it('tests status 200: GET request tests that ordering by neither asecending or descending ignores request as sends back articles', () => {
       return request(app)
       .get("/api/articles?order=cat")
       .expect(200)
@@ -343,7 +347,7 @@ describe("/api", () => {
       })
     })
   });
-  describe('/api/comments/:comment_id', () => {
+  describe('/comments/:comment_id', () => {
     it("tests status 200: PATCH request responds with the newly updated comment", () => {
       return request(app)
       .patch('/api/comments/1')
