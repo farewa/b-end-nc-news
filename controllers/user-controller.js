@@ -11,6 +11,7 @@ exports.getUserByUsername = (req, res, next) => {
 exports.getAllUsers = (req, res, next) => {
   fetchAllUsers()
   .then((users) => res.status(200).send({users}))
+  .catch(next)
 }
 
 exports.postNewUser = (req, res, next) => {
