@@ -47,6 +47,15 @@ describe("/api", () => {
         });
         return Promise.all(methodsNotAllowed)
       })
+      it("tests status 400: POST request errors when not all of the required keys are given for posting a new topic", () => {
+        return request(app)
+        .post('/api/topics')
+        .send({slug: 'chocolate'})
+        .expect(400)
+        .then(({body: {message}}) => {
+          expect(message).to.eql('Bad Request')
+        })
+      })
     })
   });
   describe("/users/:username", () => {
@@ -197,7 +206,7 @@ describe("/api", () => {
           expect(message).to.eql('Bad Request')
         })
       })
-      it("tests status 400: POST request errors when not all of the required keys are given", () => {
+      it("tests status 400: POST request errors when not all of the required keys are given for posting a new article", () => {
         return request(app)
         .post('/api/articles')
         .send({body: 'Almost everything tastes better with olive oil, salt and pepper'})
