@@ -58,6 +58,42 @@ describe("/api", () => {
       })
     })
   });
+  describe("/users", () => {
+    it("tests status 201: POST returns the newly posted user", () => {
+      return request(app)
+      .post("/api/users")
+      .send({username: "haribomadness", avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png", name: "Sirena"})
+      .expect(201)
+      .then(({body: {user}}) => {
+        expect(user).to.eql({username: 'haribomadness',
+        avatar_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
+        name: 'Sirena'})
+      })
+    })
+    describe("errors", () => {
+      it("tests status 400: POST request errors when not all of the required information is given", () => {
+        return request(app)
+        .post('/api/users')
+        .send({name: "Sirena"})
+        .expect(400)
+        .then(({body: {message}}) => {
+          expect(message).to.eql('Bad Request')
+        })
+      })
+      it("tests status 405: that all other methods are not able to used on this endpoint", () => {
+        const methods = ["get", "put", "patch", "delete"];
+        const methodsNotAllowed = methods.map((method) => {
+          return request(app)
+            [method]("/api/users")
+            .expect(405)
+            .then(({ body: { message } }) => {
+              expect(message).to.eql("Method Not Allowed");
+            });
+        });
+        return Promise.all(methodsNotAllowed)
+      });
+    })
+  })
   describe("/users/:username", () => {
     it("tests status 200: GET request returns a username object and the correct status code and message", () => {
       return request(app)
@@ -69,7 +105,7 @@ describe("/api", () => {
     });
     describe("errors", () => {
     it("tests status 405: that all other methods are not able to used on this endpoint", () => {
-        const methods = ["post", "put", "delete", "patch"];
+        const methods = ["put", "delete", "patch"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
             [method]("/api/users/icellusedkars")
