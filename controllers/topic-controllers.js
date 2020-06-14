@@ -11,4 +11,5 @@ exports.postTopic = (req, res, next) => {
   const newTopic = {slug, description}
   insertTopic(newTopic)
   .then((topic) => res.status(201).send({topic}))
+  .catch(next)
 }
