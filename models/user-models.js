@@ -1,5 +1,14 @@
 const connection = require("../db/connection");
 
+exports.fetchAllUsers = () => {
+  return connection
+  .select('*')
+  .from('users')
+  .returning('*')
+  .then((users) => users)
+  
+}
+
 exports.fetchUserByUsername = (username) => {
   return connection
     .select("*")
@@ -10,7 +19,6 @@ exports.fetchUserByUsername = (username) => {
       else return user
     })
 };
-
 
 exports.insertNewUser = (newUser) => {
   if (!newUser.username ||!newUser.name === undefined) return Promise.reject({status: 400, message: 'Bad Request'})
