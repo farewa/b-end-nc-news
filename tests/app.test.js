@@ -13,7 +13,7 @@ describe("/api", () => {
   after(() => connection.destroy()); 
 
   describe("/topics", () => {
-    it("tests that GET returns a status of 200 and the topics array", () => {
+    it("tests status 200: GET request returns the correct status and the topics array", () => {
       return request(app)
         .get("/api/topics")
         .expect(200)
@@ -25,9 +25,18 @@ describe("/api", () => {
           });
         });
     });
+    it("tests status 201: POST returns the newly posted topic", () => {
+      return request(app)
+      .post('/api/topics')
+      .send({slug: 'chocolate', description: 'sweet treats'})
+      .expect(201)
+      .then(({body : {topic}}) => {
+        expect(topic).to.eql({ slug: 'chocolate', description: 'sweet treats' } )
+      })
+    })
     describe('errors', () => {
       it('tests status 405: that all other methods are not able to be used on this endpoint', () => {
-        const methods = ["post", "put", "delete", "patch"];
+        const methods = ["put", "delete", "patch"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
             [method]("/api/topics")
