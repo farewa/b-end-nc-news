@@ -59,7 +59,16 @@ describe("/api", () => {
     })
   });
   describe("/users", () => {
-    it("tests status 201: POST returns the newly posted user", () => {
+    it("tests status 200: GET request returns all users", () => {
+      return request(app)
+      .get('/api/users')
+      .expect(200)
+      .then(({body: {users}}) => {
+        expect(users).to.be.an('array')
+        expect(users[0]).to.have.all.keys('username', 'avatar_url', 'name')
+      })
+    })
+    it("tests status 201: POST request returns the newly posted user", () => {
       return request(app)
       .post("/api/users")
       .send({username: "haribomadness", avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png", name: "Sirena"})
@@ -81,7 +90,7 @@ describe("/api", () => {
         })
       })
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
-        const methods = ["get", "put", "patch", "delete"];
+        const methods = ["put", "patch", "delete"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
             [method]("/api/users")
