@@ -9,6 +9,50 @@
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+          "name": "jonny"
+        },
+        {
+          "username": "icellusedkars",
+          "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+          "name": "sam"
+        }
+      ]
+    }
+  },
+  "POST /api/topics": {
+    "description":"posts a new topic object",
+    "queries": [],
+    "examplePost": {
+      "slug": "chocolate", "description": "sweet treats"
+    },
+    "exampleResponse": {
+      "topic": {
+          "slug": "chocolate", "description": "sweet treats" 
+      }
+    }
+  },
+  "POST /api/users": {
+    "description": "posts a new user object",
+    "queries": [],
+    "examplePost": {
+      "username": "haribomadness", "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png", "name": "Sirena"
+    },
+    "exampleResponse": {
+      "user": {
+        "username": "haribomadness",
+        "avatar_url":"https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        "name": "Sirena"
+      }
+    }
+  },
   "GET /api/users/:username": {
     "description": "serves a user object",
     "queries": [],
@@ -42,6 +86,23 @@
       ]
     }
   },
+  "POST /api/articles": {
+    "description": "posts a new article object",
+    "queries": [],
+    "examplePost": { 
+      "article": {"title": "paper maché", 
+        "body": "did anybody else use paper maché a bit too much when they were in primary school?",
+        "topic": "paper", 
+        "author": "butter_bridge"}}
+      ,
+    "exampleResponse": { "article_id": 13,
+      "title": "paper maché",
+      "body": "did anybody else use paper maché a bit too much when they were in primary school?",
+      "votes": 0,
+      "topic": "paper",
+      "author": "butter_bridge",
+      "created_at": "2020-06-14T17:15:17.333Z"}
+  },
   "GET /api/articles/:article_id": {
     "description": "serves an article object",
     "queries": [],
@@ -74,6 +135,11 @@
         "comment_count": 13
       }
     }
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "serves the correct status code and no content",
+    "queries": [],
+    "exampleResponse": []
   },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of comments with the associated article_id",
