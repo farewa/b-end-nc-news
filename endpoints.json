@@ -28,14 +28,16 @@
     }
   },
   "POST /api/topics": {
-    "description":"posts a new topic object",
+    "description": "posts a new topic object",
     "queries": [],
     "examplePost": {
-      "slug": "chocolate", "description": "sweet treats"
+      "slug": "chocolate",
+      "description": "sweet treats"
     },
     "exampleResponse": {
       "topic": {
-          "slug": "chocolate", "description": "sweet treats" 
+        "slug": "chocolate",
+        "description": "sweet treats"
       }
     }
   },
@@ -43,12 +45,14 @@
     "description": "posts a new user object",
     "queries": [],
     "examplePost": {
-      "username": "haribomadness", "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png", "name": "Sirena"
+      "username": "haribomadness",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      "name": "Sirena"
     },
     "exampleResponse": {
       "user": {
         "username": "haribomadness",
-        "avatar_url":"https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+        "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
         "name": "Sirena"
       }
     }
@@ -65,7 +69,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order", "limit", "page"],
     "exampleResponse": {
       "articles": [
@@ -75,7 +79,7 @@
           "author": "weegembump",
           "body": "Text from the article..",
           "created_at": "2019-11-15T12:21:54.171Z"
-        }, 
+        },
         {
           "title": "Living in the shadow of a great man",
           "topic": "mitch",
@@ -89,19 +93,23 @@
   "POST /api/articles": {
     "description": "posts a new article object",
     "queries": [],
-    "examplePost": { 
-      "article": {"title": "paper maché", 
+    "examplePost": {
+      "article": {
+        "title": "paper maché",
         "body": "did anybody else use paper maché a bit too much when they were in primary school?",
-        "topic": "paper", 
-        "author": "butter_bridge"}}
-      ,
-    "exampleResponse": { "article_id": 13,
+        "topic": "paper",
+        "author": "butter_bridge"
+      }
+    },
+    "exampleResponse": {
+      "article_id": 13,
       "title": "paper maché",
       "body": "did anybody else use paper maché a bit too much when they were in primary school?",
       "votes": 0,
       "topic": "paper",
       "author": "butter_bridge",
-      "created_at": "2020-06-14T17:15:17.333Z"}
+      "created_at": "2020-06-14T17:15:17.333Z"
+    }
   },
   "GET /api/articles/:article_id": {
     "description": "serves an article object",
@@ -120,9 +128,9 @@
     }
   },
   "PATCH /api/articles/:article_id": {
-    "description": "serves the updated article",
+    "description": "serves the updated article object",
     "queries": [],
-    "examplePatch": {"inc_votes": 1},
+    "examplePatch": { "inc_votes": 1 },
     "exampleResponse": {
       "article": {
         "author": "butter_bridge",
@@ -184,7 +192,7 @@
   "PATCH /api/comments/:comment_id": {
     "description": "serves the updated comment",
     "queries": [],
-    "examplePatch": {"inc_votes" : 1},
+    "examplePatch": { "inc_votes": 1 },
     "exampleResponse": {
       "comment_id": 1,
       "author": "butter_bridge",
