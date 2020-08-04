@@ -36,6 +36,8 @@ npm i
 ```
 In the root folder of the project, create a `knexfile.js` and copy and paste the following
 
+(If you're using linux, you will need to also put in a user and password for psql)
+
 ```js
 // knexfile.js
 
