@@ -2,6 +2,8 @@
 
 This project is a northcoders social news RESTful API that was created in order to create a Reddit site frontEnd single page app.
 
+The current [frontEnd](https://github.com/farewa/frontEnd-nc-news/tree/master/src) project is still being built but can be found here
+
 
 ### Hosting
 
