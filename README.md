@@ -107,14 +107,14 @@ const baseConfig = {
 const customConfig = {
   development: {
     connection: {
-      database: "northcoders_news",
+      database: "nc_news",
       // username: 'username',
       // password: 'password'
     },
   },
   test: {
     connection: {
-      database: "northcoders_news_test",
+      database: "nc_news_test",
       // for linux users:
       // username: 'username',
       // password: 'password'
