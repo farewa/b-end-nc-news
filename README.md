@@ -26,7 +26,7 @@ The API is posted on Heroku and can visited [here](https://b-end-nc-news-app.her
 
 ### Getting started
 
-#### Prerequisites
+#### Prerequisites
 
 In order to get a copy of the this project on your machine, you will need to download [Node.js](https://nodejs.org/en/download/). This will also make sure that [NPM](https://www.npmjs.com/) is downloaded.
 
@@ -57,32 +57,15 @@ npm i
 
 ### Creating and seeding the databases
 
-There are two databases for this project - northcoders_news for development and northcoders_news_test for testing. To set these up, do the following
+There are two databases for this project - nc_news for development and nc_news_test for testing. To set these up, do the following
 
-Run the "setup:dbs" script 
+Run the "setup-dbs" script 
 
 ```
 npm run setup-dbs
 ```
 
-To set up the tables in the databases, run:
-
-```
-npm run migrate-make
-```
-
-There are two scripts to seed the databases with data. To seed northcoders_news_test with the test data, type
-```
-npm run seed-test
-```
-
-To seed northcoders_news with development data, type
-
-```
-npm run seed
-```
-
-### Connecting to the databases
+### Connecting to the databases
 
 In the root folder of the project, create a `knexfile.js` and copy and paste the following
 
@@ -134,6 +117,16 @@ module.exports = { ...customConfig[ENV], ...baseConfig };
 ```
 The `knexfile.js` has been *gitignored* so that your private configuration details cannot be seen.
 
+There are two scripts to seed the databases with data. To seed ncs_news_test with the test data, type
+```
+npm run seed-test
+```
+
+To seed nc_news with development data, type
+
+```
+npm run seed
+```
 
 ### Starting the app
 
@@ -142,11 +135,14 @@ Run the following command in the terminal
 ```
 npm run start
 ```
+
+You will need to make sure that you have seeded the development data
+
 Use an API testing tool like [Insomnia](https://support.insomnia.rest/) to test the different API endpoints on your machine.
 
 When you are finished with the server, press `ctrl + c`
 
-### Testing
+### Testing
 
 All endpoints were tested.
 
