@@ -26,16 +26,64 @@ The API is posted on Heroku and can visited [here](https://b-end-nc-news-app.her
 
 ### Getting started
 
-In order to get a copy of the this project on your machine, follow these steps
+#### Prerequisites
+
+In order to get a copy of the this project on your machine, you will need to download [Node.js](https://nodejs.org/en/download/). This will also make sure that [NPM](https://www.npmjs.com/) is downloaded.
+
+To ensure that this has worked correctly, type the following in the terminal
 
 ```
-https://github.com/ibi30/b-end-nc-news.git
+node -v
+npm -v
 ```
-Navigate to the correct directory and install node dependencies
+This will tell you the versions of Node.js and NPM that have been installed.
+
+### Installation
+
+Fork this repository, copy the URL, then navigate to the folder you want to save the project to in your terminal.
+
+Then, type the following:
+
+```
+git clone <URL-of-the-forked-repo>
+```
+
+To install all the packages, type
 
 ```
 npm i
 ```
+
+
+### Creating and seeding the databases
+
+There are two databases for this project - northcoders_news for development and northcoders_news_test for testing. To set these up, do the following
+
+Run the "setup:dbs" script 
+
+```
+npm run setup:dbs
+```
+
+To set up the tables in the databases, run:
+
+```
+npm run migrate-make
+```
+
+There are two scripts to seed the databases with data. To seed northcoders_news_test with the test data, type
+```
+npm run seed-test
+```
+
+To seed northcoders_news with development data, type
+
+```
+npm run seed
+```
+
+### Connecting to the databases
+
 In the root folder of the project, create a `knexfile.js` and copy and paste the following
 
 (If you're using linux, you will need to also put in a user and password for psql)
@@ -43,62 +91,75 @@ In the root folder of the project, create a `knexfile.js` and copy and paste the
 ```js
 // knexfile.js
 
-const ENV = process.env.NODE_ENV || 'development';
+const ENV = process.env.NODE_ENV || "development";
+const { DB_URL } = process.env;
 
 const baseConfig = {
-  client: 'pg',
+  client: "pg",
   migrations: {
-    directory: './db/migrations'
+    directory: "./db/migrations",
   },
   seeds: {
-    directory: './db/seeds'
-  }
+    directory: "./db/seeds",
+  },
 };
 
 const customConfig = {
   development: {
     connection: {
-      database: 'nc_news'
-      // user,
-      // password
-    }
+      database: "northcoders_news",
+      // username: 'username',
+      // password: 'password'
+    },
   },
   test: {
     connection: {
-      database: 'nc_news_test'
-      // user,
-      // password
-    }
+      database: "northcoders_news_test",
+      // for linux users:
+      // username: 'username',
+      // password: 'password'
+    },
   },
-
+  production: {
+    connection: {
+      connectionString: DB_URL,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    },
+  },
 };
 
 module.exports = { ...customConfig[ENV], ...baseConfig };
 ```
+The `knexfile.js` has been *gitignored* so that your private configuration details cannot be seen.
 
-Run the "setup:dbs" script
 
-```
-npm run setup:dbs
-```
-Run the "seed:run" script
+### Starting the app
 
-```
-npm run seed:run
-```
-Run a local version
+Run the following command in the terminal
 
 ```
 npm run start
 ```
 Use an API testing tool like [Insomnia](https://support.insomnia.rest/) to test the different API endpoints on your machine.
 
-When you are finished with the server, press ctrl + c
+When you are finished with the server, press `ctrl + c`
 
-To run the test script 
+### Testing
+
+All endpoints were tested.
+
+To run the test script, type
 
 ```
 npm test
+```
+
+To see the util function tests that were used to manipulate the data before seeding, type
+
+```
+npm run test-util
 ```
 
 ### Available routes and methods
