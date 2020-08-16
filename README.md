@@ -62,7 +62,7 @@ There are two databases for this project - northcoders_news for development and 
 Run the "setup:dbs" script 
 
 ```
-npm run setup:dbs
+npm run setup-dbs
 ```
 
 To set up the tables in the databases, run:
