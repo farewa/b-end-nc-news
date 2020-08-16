@@ -57,7 +57,7 @@ npm i
 
 ### Creating and seeding the databases
 
-There are two databases for this project - nc_news for development and nc_news_test for testing. To set these up, do the following
+There are two databases for this project - `nc_news` for development and `nc_news_test` for testing. To set these up, do the following
 
 Run the "setup-dbs" script 
 
