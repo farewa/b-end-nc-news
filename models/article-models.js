@@ -1,47 +1,71 @@
 const connection = require("../db/connection");
 
-exports.fetchAllArticles = (sort_by, order, author, topic, limit = 10, page = 1) => {
+exports.fetchAllArticles = ({
+  sort_by,
+  order,
+  author,
+  topic,
+  limit = 10,
+  page = 1,
+}) => {
   return connection
-  .select(
-    "articles.author", 
-    "articles.title", 
-    "articles.article_id", 
-    "articles.topic", 
-    "articles.created_at", 
-    "articles.votes")
-  .from("articles")
-  .leftJoin("comments", "comments.article_id", "articles.article_id")
-  .groupBy("articles.article_id")
-  .count("comments.article_id as comment_count")
-  .limit(limit)
-  .offset(page * limit - limit)
-  .orderBy(sort_by || 'created_at', order || 'desc')
-  .modify((query) => {
-    if (author) query.where("articles.author", author)
-    if (topic) query.where("articles.topic", topic)
-  })
-  .then((articles) => {
-    if (articles.length !== 0) return [articles]
-    else {
-      if (author) return Promise.all([articles, queryChecker('username', 'users', author)])
-      else if (topic) return Promise.all([articles, queryChecker('slug', 'topics', topic)])  
-    }
-  })
-  .then(([ articles, ifExists]) => {
-    if (ifExists || articles.length) return articles
-  })
-}
+    .select(
+      "articles.author",
+      "articles.title",
+      "articles.article_id",
+      "articles.topic",
+      "articles.created_at",
+      "articles.votes"
+    )
+    .from("articles")
+    .leftJoin("comments", "comments.article_id", "articles.article_id")
+    .groupBy("articles.article_id")
+    .count("comments.article_id as comment_count")
+    .limit(limit)
+    .offset(page * limit - limit)
+    .orderBy(sort_by || "created_at", order || "desc")
+    .modify((query) => {
+      if (author) query.where("articles.author", author);
+      if (topic) query.where("articles.topic", topic);
+    })
+    .then((articles) => {
+      if (articles.length !== 0) return [articles];
+      else {
+        if (author)
+          return Promise.all([
+            articles,
+            queryChecker("username", "users", author),
+          ]);
+        else if (topic)
+          return Promise.all([articles, queryChecker("slug", "topics", topic)]);
+      }
+    })
+    .then(([articles, ifExists]) => {
+      if (ifExists || articles.length) return articles;
+    });
+};
 
 const queryChecker = (column, table, value) => {
   return connection
-  .select(column)
-  .from(table)
-  .where({[column]: value})
-  .then((response)=> {
-    if (response.length === 0) return Promise.reject({status: 404, message: 'Route not found'})
-    else return true
-  })
-}
+    .select(column)
+    .from(table)
+    .where({ [column]: value })
+    .then((response) => {
+      if (response.length === 0)
+        return Promise.reject({ status: 404, message: "Route not found" });
+      else return true;
+    });
+};
+
+exports.countArticles = ({ author, topic }) => {
+  return connection("articles")
+    .count("article_id as total_count")
+    .modify((query) => {
+      if (author) query.where("articles.author", author);
+      if (topic) query.where("articles.topic", topic);
+    })
+    .then(([{ total_count }]) => total_count);
+};
 
 exports.fetchArticleById = (article_id) => {
   return connection
@@ -78,17 +102,25 @@ exports.updateArticleById = (article_id, inc_votes = 0) => {
 };
 
 exports.insertCommentByArticleId = (newComment) => {
-  if (Object.values(newComment).includes(undefined)) return Promise.reject({status: 400, message: 'Bad Request'})
+  if (Object.values(newComment).includes(undefined))
+    return Promise.reject({ status: 400, message: "Bad Request" });
   return connection("comments")
     .insert(newComment)
     .returning("*")
     .then(([comment]) => {
-      if (!comment) return Promise.reject({status: 404, message: 'Route not found'})
-      else return comment
+      if (!comment)
+        return Promise.reject({ status: 404, message: "Route not found" });
+      else return comment;
     });
 };
 
-exports.fetchCommentByArticleId = (article_id, sort_by, order, limit = 10, page = 1) => {
+exports.fetchCommentByArticleId = (
+  article_id,
+  sort_by,
+  order,
+  limit = 10,
+  page = 1
+) => {
   return connection("comments")
     .select(
       "comments.comment_id",
@@ -97,37 +129,43 @@ exports.fetchCommentByArticleId = (article_id, sort_by, order, limit = 10, page 
       "comments.author",
       "comments.body"
     )
-    .from('comments')
+    .from("comments")
     .where("comments.article_id", article_id)
     .limit(limit)
     .offset(page * limit - limit)
-    .orderBy(sort_by || "created_at", order || 'desc')
+    .orderBy(sort_by || "created_at", order || "desc")
     .then((comments) => {
-      if (comments.length !== 0) return [comments]
-      else return Promise.all([comments, queryChecker('article_id', 'articles', article_id)])
+      if (comments.length !== 0) return [comments];
+      else
+        return Promise.all([
+          comments,
+          queryChecker("article_id", "articles", article_id),
+        ]);
     })
     .then(([comments, ifExists]) => {
-      if (ifExists || comments.length) return comments
-    })
+      if (ifExists || comments.length) return comments;
+    });
 };
 
 exports.insertArticle = (newArticle) => {
-  if (Object.values(newArticle).includes(undefined)) return Promise.reject({status: 400, message: 'Bad Request'})
-  return connection('articles')
-  .insert(newArticle)
-  .returning('*')
-  .then(([article]) => {
-    if (!article) return Promise.reject({status: 404, message: 'Route not found'})
-    else return article
-  })
-}
+  if (Object.values(newArticle).includes(undefined))
+    return Promise.reject({ status: 400, message: "Bad Request" });
+  return connection("articles")
+    .insert(newArticle)
+    .returning("*")
+    .then(([article]) => {
+      if (!article)
+        return Promise.reject({ status: 404, message: "Route not found" });
+      else return article;
+    });
+};
 
 exports.removeArticleById = (article_id) => {
-  return connection('articles')
-  .where('article_id', article_id)
-  .delete()
-  .then((response) => {
-    if (response) return true
-    else return Promise.reject({status: 404, message: 'Route not found'})
-})
-}
+  return connection("articles")
+    .where("article_id", article_id)
+    .delete()
+    .then((response) => {
+      if (response) return true;
+      else return Promise.reject({ status: 404, message: "Route not found" });
+    });
+};
