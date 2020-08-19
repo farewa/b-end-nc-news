@@ -5,13 +5,16 @@ const {
   insertCommentByArticleId,
   fetchCommentByArticleId,
   insertArticle,
-  removeArticleById
+  removeArticleById,
+  countArticles,
 } = require("../models/article-models");
 
+
 exports.getAllArticles = (req, res, next) => {
-  const {sort_by, order, author, topic, limit, page} = req.query
-  fetchAllArticles(sort_by, order, author, topic, limit, page)
-    .then((articles) => res.status(200).send({articles}))
+  Promise.all([fetchAllArticles(req.query), countArticles(req.query)])
+  .then(([articles, total_count]) => {
+    res.status(200).send({ articles, total_count })
+  })
     .catch(next)
 }
 
