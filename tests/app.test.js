@@ -1,16 +1,15 @@
-process.env.NODE_ENV = "test"; 
-const chai = require('chai')
-const {expect} = chai
+process.env.NODE_ENV = "test";
+const chai = require("chai");
+const { expect } = chai;
 chai.use(require("sams-chai-sorted"));
 
-const app = require("../app"); 
-const request = require("supertest"); 
-const connection = require("../db/connection"); 
+const app = require("../app");
+const request = require("supertest");
+const connection = require("../db/connection");
 
 describe("/api", () => {
-
-  beforeEach(() => connection.seed.run()); 
-  after(() => connection.destroy()); 
+  beforeEach(() => connection.seed.run());
+  after(() => connection.destroy());
 
   describe("/topics", () => {
     it("tests status 200: GET request returns the correct status and the topics array", () => {
@@ -27,15 +26,18 @@ describe("/api", () => {
     });
     it("tests status 201: POST returns the newly posted topic", () => {
       return request(app)
-      .post('/api/topics')
-      .send({slug: 'chocolate', description: 'sweet treats'})
-      .expect(201)
-      .then(({body : {topic}}) => {
-        expect(topic).to.eql({ slug: 'chocolate', description: 'sweet treats' } )
-      })
-    })
-    describe('errors', () => {
-      it('tests status 405: that all other methods are not able to be used on this endpoint', () => {
+        .post("/api/topics")
+        .send({ slug: "chocolate", description: "sweet treats" })
+        .expect(201)
+        .then(({ body: { topic } }) => {
+          expect(topic).to.eql({
+            slug: "chocolate",
+            description: "sweet treats",
+          });
+        });
+    });
+    describe("errors", () => {
+      it("tests status 405: that all other methods are not able to be used on this endpoint", () => {
         const methods = ["put", "delete", "patch"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
@@ -45,50 +47,58 @@ describe("/api", () => {
               expect(message).to.eql("Method Not Allowed");
             });
         });
-        return Promise.all(methodsNotAllowed)
-      })
+        return Promise.all(methodsNotAllowed);
+      });
       it("tests status 400: POST request errors when not all of the required keys are given for posting a new topic", () => {
         return request(app)
-        .post('/api/topics')
-        .send({slug: 'chocolate'})
-        .expect(400)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Bad Request')
-        })
-      })
-    })
+          .post("/api/topics")
+          .send({ slug: "chocolate" })
+          .expect(400)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Bad Request");
+          });
+      });
+    });
   });
   describe("/users", () => {
     it("tests status 200: GET request returns all users", () => {
       return request(app)
-      .get('/api/users')
-      .expect(200)
-      .then(({body: {users}}) => {
-        expect(users).to.be.an('array')
-        expect(users[0]).to.have.all.keys('username', 'avatar_url', 'name')
-      })
-    })
+        .get("/api/users")
+        .expect(200)
+        .then(({ body: { users } }) => {
+          expect(users).to.be.an("array");
+          expect(users[0]).to.have.all.keys("username", "avatar_url", "name");
+        });
+    });
     it("tests status 201: POST request returns the newly posted user", () => {
       return request(app)
-      .post("/api/users")
-      .send({username: "haribomadness", avatar_url: "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png", name: "Sirena"})
-      .expect(201)
-      .then(({body: {user}}) => {
-        expect(user).to.eql({username: 'haribomadness',
-        avatar_url: 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png',
-        name: 'Sirena'})
-      })
-    })
+        .post("/api/users")
+        .send({
+          username: "haribomadness",
+          avatar_url:
+            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          name: "Sirena",
+        })
+        .expect(201)
+        .then(({ body: { user } }) => {
+          expect(user).to.eql({
+            username: "haribomadness",
+            avatar_url:
+              "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+            name: "Sirena",
+          });
+        });
+    });
     describe("errors", () => {
       it("tests status 400: POST request errors when not all of the required information is given", () => {
         return request(app)
-        .post('/api/users')
-        .send({name: "Sirena"})
-        .expect(400)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Bad Request')
-        })
-      })
+          .post("/api/users")
+          .send({ name: "Sirena" })
+          .expect(400)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Bad Request");
+          });
+      });
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
         const methods = ["put", "patch", "delete"];
         const methodsNotAllowed = methods.map((method) => {
@@ -99,10 +109,10 @@ describe("/api", () => {
               expect(message).to.eql("Method Not Allowed");
             });
         });
-        return Promise.all(methodsNotAllowed)
+        return Promise.all(methodsNotAllowed);
       });
-    })
-  })
+    });
+  });
   describe("/users/:username", () => {
     it("tests status 200: GET request returns a username object and the correct status code and message", () => {
       return request(app)
@@ -113,7 +123,7 @@ describe("/api", () => {
         });
     });
     describe("errors", () => {
-    it("tests status 405: that all other methods are not able to used on this endpoint", () => {
+      it("tests status 405: that all other methods are not able to used on this endpoint", () => {
         const methods = ["put", "delete", "patch"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
@@ -123,165 +133,206 @@ describe("/api", () => {
               expect(message).to.eql("Method Not Allowed");
             });
         });
-        return Promise.all(methodsNotAllowed)
+        return Promise.all(methodsNotAllowed);
       });
-    it("tests status 404: GET request errors when trying to delete a valid user_id that does not exist", () => {
-      return request(app)
-      .get('/api/users/not-a-username')
-      .expect(404)
-      .then(({body: {message}}) => {
-        expect(message).to.eql('Route not found')
-      })
-    })
+      it("tests status 404: GET request errors when trying to delete a valid user_id that does not exist", () => {
+        return request(app)
+          .get("/api/users/not-a-username")
+          .expect(404)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Route not found");
+          });
+      });
     });
   });
-  describe('/articles', () => {
-    it('tests status 200: GET request returns an array of article objects', () => {
+  describe("/articles", () => {
+    it("tests status 200: GET request returns an array of article objects", () => {
       return request(app)
-      .get('/api/articles')
-      .expect(200)
-      .then(({body: {articles}}) => {
-        expect(articles).to.be.an('array')
-        expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
-      })
-    })
-    it('tests status 201: POST request returns the newly posted article', () => {
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles).to.be.an("array");
+          expect(articles[0]).to.have.all.keys(
+            "author",
+            "title",
+            "article_id",
+            "topic",
+            "created_at",
+            "votes",
+            "comment_count"
+          );
+        });
+    });
+    it("tests status 200: GET request for articles includes a total_count property equal to the total number of matching articles no matter the limit or page", () => {
       return request(app)
-      .post("/api/articles")
-      .send({title: 'paper maché', 
-             body: 'did anybody else use paper maché a bit too much when they were in primary school?',
-             topic: 'paper', 
-             author: 'butter_bridge'})
-      .expect(201)
-      .then(({body: {article}}) => {
-        expect(article).include(
-          {title: 'paper maché',
-          body: 'did anybody else use paper maché a bit too much when they were in primary school?',
-          votes: 0,
-          topic: 'paper',
-          author: 'butter_bridge'}
-        )
-        expect(article).to.have.all.keys('article_id', 'title', 'body', 'votes', 'topic', 'author', 'created_at')
-      })
-    })
-    describe('queries', () => {
-      it('tests status 200: GET request can accept a sort by query', () => {
-        return request(app)
-        .get('/api/articles?sort_by=votes')
+        .get("/api/articles?p=2")
         .expect(200)
-        .then(({body : {articles}}) => {
-          expect(articles).to.be.sortedBy('votes', {descending: true})
+        .then(({ body }) => {
+          expect(body.total_count).to.equal("12");
+        });
+    });
+    it("tests status 201: POST request returns the newly posted article", () => {
+      return request(app)
+        .post("/api/articles")
+        .send({
+          title: "paper maché",
+          body:
+            "did anybody else use paper maché a bit too much when they were in primary school?",
+          topic: "paper",
+          author: "butter_bridge",
         })
-      })
-      it('tests status 200: GET request can accept an order query', () => {
+        .expect(201)
+        .then(({ body: { article } }) => {
+          expect(article).include({
+            title: "paper maché",
+            body:
+              "did anybody else use paper maché a bit too much when they were in primary school?",
+            votes: 0,
+            topic: "paper",
+            author: "butter_bridge",
+          });
+          expect(article).to.have.all.keys(
+            "article_id",
+            "title",
+            "body",
+            "votes",
+            "topic",
+            "author",
+            "created_at"
+          );
+        });
+    });
+    describe("queries", () => {
+      it("tests status 200: GET request can accept a sort by query", () => {
         return request(app)
-        .get('/api/articles?order=asc')
-        .expect(200)
-        .then(({body : {articles}}) => {
-          expect(articles).to.be.sortedBy('created_at', {descending: false})
-        })
-      })
-      it('tests status 200: GET request returns a limited number of articles with a limit query', () => {
+          .get("/api/articles?sort_by=votes")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.sortedBy("votes", { descending: true });
+          });
+      });
+      it("tests status 200: GET request can accept an order query", () => {
         return request(app)
-        .get('/api/articles?limit=5')
-        .expect(200)
-        .then(({body: {articles}}) => {
-          expect(articles.length).to.equal(5)
-        })
-      })
-      it('tests status 200: GET request returns a limited number of articles from a specific page when passed both queries', () => {
+          .get("/api/articles?order=asc")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.sortedBy("created_at", {
+              descending: false,
+            });
+          });
+      });
+      it("tests status 200: GET request returns a limited number of articles with a limit query", () => {
         return request(app)
-        .get('/api/articles?limit=5&page=2')
-        .expect(200)
-        .then(({body: {articles}}) => {
-          expect(articles[0].title).to.eql('A')
-          expect(articles.length).to.equal(5)
-        })
-      })
+          .get("/api/articles?limit=5")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles.length).to.equal(5);
+          });
+      });
+      it("tests status 200: GET request returns a limited number of articles from a specific page when passed both queries", () => {
+        return request(app)
+          .get("/api/articles?limit=5&page=2")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0].title).to.eql("A");
+            expect(articles.length).to.equal(5);
+          });
+      });
       it("tests status 200: GET request returns filtered article array with only the articles relating to a specific author", () => {
         return request(app)
-        .get('/api/articles?author=butter_bridge')
-        .expect(200)
-        .then(({body: {articles}}) => {
-          expect(articles[0].author).to.eql('butter_bridge')
-        })
-      })
+          .get("/api/articles?author=butter_bridge")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0].author).to.eql("butter_bridge");
+          });
+      });
       it("tests status 200: GET request returns filtered article with only the articles relating to a specific topic", () => {
         return request(app)
-        .get('/api/articles?topic=mitch')
-        .expect(200)
-        .then(({body : {articles}}) => {
-          expect(articles[0].topic).to.eql('mitch')
-        })
-      })
-      it('tests status 200: GET request tests that ordering by neither asecending or descending ignores request as sends back articles', () => {
+          .get("/api/articles?topic=mitch")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles[0].topic).to.eql("mitch");
+          });
+      });
+      it("tests status 200: GET request tests that ordering by neither asecending or descending ignores request as sends back articles", () => {
         return request(app)
-        .get("/api/articles?order=cat")
-        .expect(200)
-        .then(({body : {articles}}) => {
-          expect(articles).to.be.an('array')
-          expect(articles[0]).to.have.all.keys('author', 'title', 'article_id', 'topic', 'created_at', 'votes', 'comment_count')
-        })
-      })
+          .get("/api/articles?order=cat")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.an("array");
+            expect(articles[0]).to.have.all.keys(
+              "author",
+              "title",
+              "article_id",
+              "topic",
+              "created_at",
+              "votes",
+              "comment_count"
+            );
+          });
+      });
       it("tests status 200: GET request does not error when querying for an author that exists with no articles", () => {
         return request(app)
-        .get('/api/articles?author=lurker')
-        .expect(200)
-        .then(({body: {articles}}) => {
-          expect(articles).to.be.an('array')
-          expect(articles.length).to.equal(0)
-        })
-      })
+          .get("/api/articles?author=lurker")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.an("array");
+            expect(articles.length).to.equal(0);
+          });
+      });
       it("tests status 200: GET request does not error when querying for a topic that exists with no articles", () => {
         return request(app)
-        .get('/api/articles?topic=paper')
-        .expect(200)
-        .then(({body: {articles}}) => {
-          expect(articles).to.be.an('array')
-          expect(articles.length).to.equal(0)
-        })
-      })
-    }) 
-    describe('errors', () => {
-      it('tests status 400: tests that sorting by a column that does not exists errors with a bad request', () => {
+          .get("/api/articles?topic=paper")
+          .expect(200)
+          .then(({ body: { articles } }) => {
+            expect(articles).to.be.an("array");
+            expect(articles.length).to.equal(0);
+          });
+      });
+    });
+    describe("errors", () => {
+      it("tests status 400: tests that sorting by a column that does not exists errors with a bad request", () => {
         return request(app)
-        .get('/api/articles?sort_by=apples')
-        .expect(400)
-        .then(({body : {message}}) => {
-          expect(message).to.eql('Bad Request')
-        })
-      })
+          .get("/api/articles?sort_by=apples")
+          .expect(400)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Bad Request");
+          });
+      });
       it("tests status 400: POST request errors when not all of the required keys are given for posting a new article", () => {
         return request(app)
-        .post('/api/articles')
-        .send({body: 'Almost everything tastes better with olive oil, salt and pepper'})
-        .expect(400)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Bad Request')
-        })
-      })
+          .post("/api/articles")
+          .send({
+            body:
+              "Almost everything tastes better with olive oil, salt and pepper",
+          })
+          .expect(400)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Bad Request");
+          });
+      });
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
         const methods = ["put", "delete", "patch"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
-          [method]('/api/articles')
-          .expect(405)
-          .then(({body: {message}}) => {
-            expect(message).to.eql('Method Not Allowed')
-          })
-        })
-        return Promise.all(methodsNotAllowed)
-      })
-      it('tests status 404: tests that passing a query with an author that does not exist errors with route not found', () => {
+            [method]("/api/articles")
+            .expect(405)
+            .then(({ body: { message } }) => {
+              expect(message).to.eql("Method Not Allowed");
+            });
+        });
+        return Promise.all(methodsNotAllowed);
+      });
+      it("tests status 404: tests that passing a query with an author that does not exist errors with route not found", () => {
         return request(app)
-        .get('/api/articles?author=not-an-author')
-        .expect(404)
-        .then(({body : {message}}) => {
-          expect(message).to.eql('Route not found')
-        })
-      })
-    })
-  })
+          .get("/api/articles?author=not-an-author")
+          .expect(404)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Route not found");
+          });
+      });
+    });
+  });
   describe("/articles/:article_id", () => {
     it("tests status 200: GET request returns correct status and the specified article object", () => {
       return request(app)
@@ -319,23 +370,21 @@ describe("/api", () => {
         });
     });
     it("tests status 204: DELETE request responds with the correct status and no content", () => {
-      return request(app)
-      .delete('/api/articles/1')
-      .expect(204)
-    })
+      return request(app).delete("/api/articles/1").expect(204);
+    });
     describe("errors", () => {
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
-        const methods = ['put', "post"]
+        const methods = ["put", "post"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
-          [method]('/api/articles/1')
-          .expect(405)
-          .then(({body : {message}}) => {
-            expect(message).to.eql('Method Not Allowed')
-          })
-        })
-        return Promise.all(methodsNotAllowed)
-      })
+            [method]("/api/articles/1")
+            .expect(405)
+            .then(({ body: { message } }) => {
+              expect(message).to.eql("Method Not Allowed");
+            });
+        });
+        return Promise.all(methodsNotAllowed);
+      });
       it("tests status 400: GET request for an article_id that is in the wrong format errors with correct status code and message", () => {
         return request(app)
           .get("/api/articles/dog")
@@ -363,12 +412,12 @@ describe("/api", () => {
       });
       it("tests status 404: DELETE request errors when trying to delete a valid article_id that does not exist", () => {
         return request(app)
-        .delete('/api/articles/1000')
-        .expect(404)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Route not found')
-        })
-      })
+          .delete("/api/articles/1000")
+          .expect(404)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Route not found");
+          });
+      });
     });
   });
   describe("/articles/:article_id/comments", () => {
@@ -406,156 +455,171 @@ describe("/api", () => {
           );
         });
     });
-    it('tests status 200: GET request responds with an empty array when the article_id exists but has no comments', () => {
+    it("tests status 200: GET request responds with an empty array when the article_id exists but has no comments", () => {
       return request(app)
-      .get('/api/articles/2/comments')
-      .expect(200)
-      .then(({body: {comments}}) => {
-        expect(comments).to.be.an('array')
-        expect(comments.length).to.equal(0)
-      })
-    })
-    describe('queries', () => {
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(comments).to.be.an("array");
+          expect(comments.length).to.equal(0);
+        });
+    });
+    describe("queries", () => {
       it("tests status 200: GET request returns a sorted array of comments when passed a sort_by query", () => {
         return request(app)
-        .get('/api/articles/1/comments?sort_by=votes')
-        .expect(200)
-        .then(({body: {comments}}) => {
-          expect(comments).to.be.sortedBy('votes', {descending: true})
-        })
-      })
-      it('tests status 200: GET request returns a sorted array sorted by order but defaults to descending when a specifier is not passed', () => {
+          .get("/api/articles/1/comments?sort_by=votes")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments).to.be.sortedBy("votes", { descending: true });
+          });
+      });
+      it("tests status 200: GET request returns a sorted array sorted by order but defaults to descending when a specifier is not passed", () => {
         return request(app)
-        .get("/api/articles/1/comments?order=asc")
-        .expect(200)
-        .then(({body: {comments}}) => {
-          expect(comments).to.be.sorted({descending: false})
-        })
-      })
+          .get("/api/articles/1/comments?order=asc")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments).to.be.sorted({ descending: false });
+          });
+      });
       it("tests status 200: GET request returns a limited number of comments with a limit query", () => {
         return request(app)
-        .get('/api/articles/1/comments?limit=5')
-        .expect(200)
-        .then(({body: {comments}}) => {
-          expect(comments.length).to.equal(5)
-        })
-      })
+          .get("/api/articles/1/comments?limit=5")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments.length).to.equal(5);
+          });
+      });
       it("GET request returns a limited number of comments from a specific page when passed both queries", () => {
         return request(app)
-        .get('/api/articles/1/comments?limit=2&page=2')
-        .expect(200)
-        .then(({body: {comments}}) => {
-          expect(comments.length).to.equal(2)
-          expect(comments[0].body).to.eql(' I carry a log — yes. Is it funny to you? It is not to me.')
-        })
-      })
-    })
-    describe('errors', () => {
+          .get("/api/articles/1/comments?limit=2&page=2")
+          .expect(200)
+          .then(({ body: { comments } }) => {
+            expect(comments.length).to.equal(2);
+            expect(comments[0].body).to.eql(
+              " I carry a log — yes. Is it funny to you? It is not to me."
+            );
+          });
+      });
+    });
+    describe("errors", () => {
       it("tests status 405: that all other methods are not able to used on this endpoint", () => {
-        const methods = ['put', 'patch', 'delete']
+        const methods = ["put", "patch", "delete"];
         const methodsNotAllowed = methods.map((method) => {
           return request(app)
-          [method]('/api/articles/1/comments')
-          .expect(405)
-          .then(({body: {message}}) => {
-            expect(message).to.eql('Method Not Allowed')
+            [method]("/api/articles/1/comments")
+            .expect(405)
+            .then(({ body: { message } }) => {
+              expect(message).to.eql("Method Not Allowed");
+            });
+        });
+        return Promise.all(methodsNotAllowed);
+      });
+      it("tests status 404: GET request errors when given a valid article_id that does not exist", () => {
+        return request(app)
+          .get("/api/articles/1000/comments")
+          .expect(404)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Route not found");
+          });
+      });
+      it("tests status 400: POST request errors when not all of the required keys are given", () => {
+        return request(app)
+          .post("/api/articles/1/comments")
+          .send({
+            body:
+              "the weather outside Northcoders is particularly bright today",
           })
-        })
-        return Promise.all(methodsNotAllowed)
-      })
-      it('tests status 404: GET request errors when given a valid article_id that does not exist', () => {
+          .expect(400)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Bad Request");
+          });
+      });
+      it("tests status 404: POST request errors when posting to a valid article_id that does not exist", () => {
         return request(app)
-        .get('/api/articles/1000/comments')
-        .expect(404)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Route not found')
-        })
-      })
-      it('tests status 400: POST request errors when not all of the required keys are given', () => {
-        return request(app)
-        .post("/api/articles/1/comments")
-        .send({
-          body: "the weather outside Northcoders is particularly bright today"
-        })
-        .expect(400)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Bad Request')
-        })
-      })
-      it('tests status 404: POST request errors when posting to a valid article_id that does not exist', () => {
-        return request(app)
-        .post('/api/articles/1000/comments')
-        .send({
-          username: "icellusedkars",
-          body: "the weather outside Northcoders is particularly bright today"})
-        .expect(404)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Route not found')
-        })
-      })
-    })
+          .post("/api/articles/1000/comments")
+          .send({
+            username: "icellusedkars",
+            body:
+              "the weather outside Northcoders is particularly bright today",
+          })
+          .expect(404)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Route not found");
+          });
+      });
+    });
   });
-  describe('/comments/:comment_id', () => {
+  describe("/comments/:comment_id", () => {
     it("tests status 200: PATCH request responds with the newly updated comment", () => {
       return request(app)
-      .patch('/api/comments/1')
-      .send({inc_votes : 1 })
-      .expect(200)
-      .then(({body: {comment}}) => {
-        expect(comment.votes).to.equal(17)
-        expect(comment).to.have.all.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
-      })
-    })
-    it('tests status 200: PATCH request ignores a body that is sent with no inc_votes', () => {
+        .patch("/api/comments/1")
+        .send({ inc_votes: 1 })
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          expect(comment.votes).to.equal(17);
+          expect(comment).to.have.all.keys(
+            "comment_id",
+            "author",
+            "article_id",
+            "votes",
+            "created_at",
+            "body"
+          );
+        });
+    });
+    it("tests status 200: PATCH request ignores a body that is sent with no inc_votes", () => {
       return request(app)
-      .patch('/api/comments/2')
-      .send()
-      .expect(200)
-      .then(({body: {comment}}) => {
-        expect(comment).to.have.all.keys('comment_id', 'author', 'article_id', 'votes', 'created_at', 'body')
-        expect(comment.votes).to.not.change
-      })
-    })
+        .patch("/api/comments/2")
+        .send()
+        .expect(200)
+        .then(({ body: { comment } }) => {
+          expect(comment).to.have.all.keys(
+            "comment_id",
+            "author",
+            "article_id",
+            "votes",
+            "created_at",
+            "body"
+          );
+          expect(comment.votes).to.not.change;
+        });
+    });
     it("tests status 204: DELETE request responds with the correct status and no content", () => {
-      return request(app)
-      .delete('/api/comments/2')
-      .expect(204)
-    })
-    describe('errors', () => {
-      it('tests status 405: that all other methods are not able to be used on this endpoint', () => {
-        const methods = ['get', 'post', 'put']
+      return request(app).delete("/api/comments/2").expect(204);
+    });
+    describe("errors", () => {
+      it("tests status 405: that all other methods are not able to be used on this endpoint", () => {
+        const methods = ["get", "post", "put"];
         const invalidMethods = methods.map((method) => {
           return request(app)
-          [method]('/api/comments/2')
-          .expect(405)
-          .then(({body: {message}}) => {
-            expect(message).to.eql('Method Not Allowed')
-          })
-        })
-        return Promise.all(invalidMethods)
-      })
-      it('tests status 404: PATCH request errors when posting to a valid comment_id that does not exist', () => {
+            [method]("/api/comments/2")
+            .expect(405)
+            .then(({ body: { message } }) => {
+              expect(message).to.eql("Method Not Allowed");
+            });
+        });
+        return Promise.all(invalidMethods);
+      });
+      it("tests status 404: PATCH request errors when posting to a valid comment_id that does not exist", () => {
         return request(app)
-        .patch('/api/comments/1000')
-        .send({ inc_votes : 1 })
-        .expect(404)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Route not found')
-        })
-      })
-      it('tests status 404: DELETE request errors when trying to delete a valid comment_id that does not exist', () => {
+          .patch("/api/comments/1000")
+          .send({ inc_votes: 1 })
+          .expect(404)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Route not found");
+          });
+      });
+      it("tests status 404: DELETE request errors when trying to delete a valid comment_id that does not exist", () => {
         return request(app)
-        .delete('/api/comments/1000')
-        .expect(404)
-        .then(({body: {message}}) => {
-          expect(message).to.eql('Route not found')
-        })
-      })
-    })
-  })
-  it('responds with JSON with endpoints', () => {
-    return request(app)
-    .get('/api')
-    .expect(200)
-  })
+          .delete("/api/comments/1000")
+          .expect(404)
+          .then(({ body: { message } }) => {
+            expect(message).to.eql("Route not found");
+          });
+      });
+    });
+  });
+  it("responds with JSON with endpoints", () => {
+    return request(app).get("/api").expect(200);
+  });
 });
