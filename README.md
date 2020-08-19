@@ -40,20 +40,45 @@ This will tell you the versions of Node.js and NPM that have been installed.
 
 ### Installation
 
-Fork this repository, copy the URL, then navigate to the folder you want to save the project to in your terminal.
+#### Linux
+
+If you are using a linux machine, you will have to do the following 
+
+```
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get install git && curl postgresql postgresql-contrib && touch ~/.bash_profile && curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash && source ~/.nvm/nvm.sh && nvm install node && nvm use node && sudo -u postgres createuser --superuser $USER
+```
+This will install **Git** , **Node.js** and **PSQL**
+
+You will then need to setup *PSQL*
+
+In the terminal, type
+
+```
+psql
+```
+Then enter the following where *username* is your linux username and *secret_password* is a password of your own choosing. Make sure to wrap your password in single quotation marks.
+
+```
+ALTER USER username WITH PASSWORD 'secret_password';
+```
+Then you can exit psql in the terminal by typing `\q`
+
+
+#### Accessing project
+
+Navigate to the folder you want to save the project to in your terminal
 
 Then, type the following:
 
 ```
-git clone <URL-of-the-forked-repo>
+git clone https://github.com/farewa/b-end-nc-news.git
 ```
 
-To install all the packages, type
+To install all the packages, navigate into the project that you have just cloned and type
 
 ```
 npm i
 ```
-
 
 ### Creating and seeding the databases
 
@@ -67,9 +92,7 @@ npm run setup-dbs
 
 ### Connecting to the databases
 
-In the root folder of the project, create a `knexfile.js` and copy and paste the following
-
-(If you're using linux, you will need to also put in a user and password for psql)
+In the root folder of the project, create a `knexfile.js` and copy and paste the following adding your linux username and the `psql` password that you created.
 
 ```js
 // knexfile.js
@@ -92,7 +115,7 @@ const customConfig = {
     connection: {
       database: "nc_news",
       // username: 'username',
-      // password: 'password'
+      // password: 'secret_password'
     },
   },
   test: {
@@ -100,7 +123,7 @@ const customConfig = {
       database: "nc_news_test",
       // for linux users:
       // username: 'username',
-      // password: 'password'
+      // password: 'secret_password'
     },
   },
   production: {
@@ -130,17 +153,18 @@ npm run seed
 
 ### Starting the app
 
-Run the following command in the terminal
+If you would like to have a look at the app locally, you can run the command below and use an API testing tool like [Insomnia](https://support.insomnia.rest/) to test the different API endpoints on your machine.
 
 ```
 npm run start
 ```
 
-You will need to make sure that you have seeded the development data
+You will need to make sure that you have seeded the database first.
 
-Use an API testing tool like [Insomnia](https://support.insomnia.rest/) to test the different API endpoints on your machine.
 
 When you are finished with the server, press `ctrl + c`
+
+Alternatively, you can see all the available endpoints and access the data by using the [hosted version](https://b-end-nc-news-app.herokuapp.com/api).
 
 ### Testing
 
